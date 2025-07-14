@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>页面跳转示例</title>
+  <!-- 使用 Meta Refresh 在 0 秒后跳转 -->
+  <meta http-equiv="refresh" content="0;url=https://www.example.com/">
+  <!-- 为了兼容性，JS 也做一次重定向 -->
+  <script>
+    // 如果浏览器不支持 Meta Refresh，会执行下面的 JS
+    window.location.href = "https://www.massmutualventures.com/";
+  </script>
+</head>
+<body>
+  <!-- 若以上方法都失败，提供一个手动点击链接 -->
+  <p>如果没有自动跳转，请 <a href="https://www.example.com/">点击这里</a>。</p>
+</body>
+</html>
