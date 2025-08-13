@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Handel</title>
+    <link rel="icon" type="image/png" href="app2.png">
+    <!-- 如果目标站是响应式，meta viewport 能让它自动适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000;
+        }
+        .iframe-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 430px; /* 最大宽度（可设为你想要的手机宽度） */
+            aspect-ratio: 9 / 19.5; /* 宽高比例：iPhone 竖屏比例 */
+            background: #000;
+        }
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="iframe-wrapper">
+        <iframe src="https://www.xduifhu.com"></iframe>
+    </div>
+</body>
+</html>
