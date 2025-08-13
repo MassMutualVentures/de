@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Handel</title>
+    <link rel="icon" type="image/png" href="app2.png">
+    <style>
+        body {
+            margin: 0;
+            background: #0b0b0b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .phone-frame {
+            width: 390px;   /* iPhone 宽度 */
+            height: 844px;  /* iPhone 高度 */
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+            background: #000;
+        }
+        .phone-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* 真手机全屏 */
+        @media (max-width: 430px) {
+            body {
+                background: #000;
+            }
+            .phone-frame {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <iframe src="https://www.xduifhu.com"></iframe>
+    </div>
+</body>
+</html>
