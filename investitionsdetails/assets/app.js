@@ -8,6 +8,77 @@ const todayStr = ()=> new Date().toISOString().slice(0,10);
 function curFor(symbol){ return /\.de$/i.test(symbol||'') ? 'EUR' : 'USD'; }
 function money(v, cur){ return (cur==='EUR'? fmtEUR:fmtUSD).format(v||0); }
 
+// === Robust price fetchers ===
+
+// Yahoo 批量（可选用代理）
+async function fetchYahooBatch(symbols, useProxy = false) {
+  if (!symbols.length) return {};
+  const base = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=';
+  const url = base + encodeURIComponent(symbols.join(','));
+  const finalUrl = useProxy ? 'https://cors.isomorphic-git.org/' + url : url;
+
+  const res = await fetch(finalUrl, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Yahoo HTTP ' + res.status);
+  const data = await res.json();
+
+  const out = {};
+  const arr = (data && data.quoteResponse && data.quoteResponse.result) || [];
+  for (const q of arr) {
+    const sym = (q.symbol || '').toUpperCase();
+    const price = Number(q.regularMarketPrice ?? q.bid ?? q.ask ?? 0);
+    if (sym && Number.isFinite(price) && price > 0) {
+      out[sym] = {
+        price,
+        currency: q.currency || null,
+        time: q.regularMarketTime ? q.regularMarketTime * 1000 : Date.now()
+      };
+    }
+  }
+  return out;
+}
+
+// Stooq CSV 兜底（逐个取，稳定但慢）
+async function fetchStooqBatch(symbols) {
+  const out = {};
+  for (const s of symbols) {
+    const u = `https://stooq.com/q/l/?s=${s.toLowerCase()}&f=sd2t2ohlcv&h&e=csv`;
+    try {
+      const r = await fetch(u, { cache: 'no-store' });
+      if (!r.ok) continue;
+      const txt = (await r.text()).trim().split('\n');
+      if (txt.length >= 2) {
+        const cols = txt[1].split(',');
+        const close = Number(cols[6] || '0'); // Close 列
+        if (Number.isFinite(close) && close > 0) {
+          out[s.toUpperCase()] = { price: close, currency: null, time: Date.now() };
+        }
+      }
+    } catch {}
+  }
+  return out;
+}
+
+// 总调度：先直连 Yahoo → 再代理 → 再 Stooq
+async function fetchPricesSmart(symbols) {
+  // Yahoo 直连
+  try { 
+    const m = await fetchYahooBatch(symbols, false);
+    if (Object.keys(m).length) return { map: m, source: 'yahoo' };
+  } catch {}
+  // Yahoo 经代理
+  try { 
+    const m = await fetchYahooBatch(symbols, true);
+    if (Object.keys(m).length) return { map: m, source: 'yahoo-proxy' };
+  } catch {}
+  // Stooq 兜底
+  try { 
+    const m = await fetchStooqBatch(symbols);
+    if (Object.keys(m).length) return { map: m, source: 'stooq' };
+  } catch {}
+  return { map: {}, source: 'none' };
+}
+
+
 function plPct(rec){
   const base = rec.recPrice;
   if(rec.status==='sold'){ if(rec.soldPrice && base) return (rec.soldPrice-base)/base; return NaN; }
@@ -247,5 +318,6 @@ function bind(){
   document.getElementById('btnRefresh').onclick = ()=>{ refreshPrices().then(render); };
   setInterval(()=>{ refreshPrices().then(render); }, 60000);
 }
+
 
 document.addEventListener('DOMContentLoaded', ()=>{ bind(); load(); });
