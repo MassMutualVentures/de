@@ -98,38 +98,6 @@ function plAmt(rec){
   return 0;
 }
 
-// ---- pricing ----
-async function fetchYahoo(symbol){
-  try{
-    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbol)}`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('yahoo '+res.status);
-    const j = await res.json();
-    const q = j?.quoteResponse?.result?.[0];
-    const px = q?.regularMarketPrice ?? q?.postMarketPrice ?? q?.preMarketPrice;
-    return (px!=null)? Number(px): 0;
-  }catch{ return 0; }
-}
-async function fetchStooq(symbol){
-  try{
-    let s = symbol.trim();
-    if(/\.[A-Za-z]{2,4}$/.test(s)) s = s.toLowerCase(); else s = s.toLowerCase()+'.us';
-    const url = `https://stooq.com/q/l/?s=${encodeURIComponent(s)}&f=sd2t2ohlcv&h&e=csv`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('stooq '+res.status);
-    const txt = await res.text();
-    const lines = txt.trim().split(/\r?\n/); if(lines.length<2) return 0;
-    const close = Number(lines[1].split(',')[6]);
-    return isNaN(close)? 0 : close;
-  }catch{ return 0; }
-}
-async function livePrice(symbol, source){
-  let p = 0;
-  if(source==='yahoo') p = await fetchYahoo(symbol);
-  else if(source==='stooq') p = await fetchStooq(symbol);
-  if(!p){ if(source!=='yahoo') p = await fetchYahoo(symbol); if(!p && source!=='stooq') p = await fetchStooq(symbol); }
-  return p || 0;
-}
 
 // ---- state ----
 let raw=[], view=[];
@@ -297,15 +265,48 @@ function render(){
   addBtn('»',pages,false,page===pages);
 }
 
+// 批量抓价 + 自动兜底（Yahoo → Yahoo(代理) → Stooq）
+// 只在拿到有效价格时写入 _livePrice/_liveTime；失败则保持 0 且不写时间
 async function refreshPrices(){
-  const source = state.priceSource;
+  // 取「当前页」的代码（也可改成 raw 全量）
   applyFilters();
   const { items } = paginate(view);
-  await Promise.all(items.map(async r=>{
-    const px = await livePrice(r.symbol, source);
-    r._livePrice = Number(px)||0; r._liveTime = Date.now();
-  }));
+
+  const syms = Array.from(new Set(
+    items.map(r => (r.symbol || '').toUpperCase()).filter(Boolean)
+  ));
+
+  if (!syms.length) return;
+
+  let map = {}, used = 'none';
+
+  if (state.priceSource === 'stooq') {
+    // 用户手选 Stooq：先 Stooq，失败再回退 Yahoo
+    try { map = await fetchStooqBatch(syms); if (Object.keys(map).length) used='stooq'; } catch {}
+    if (used==='none') { try { map = await fetchYahooBatch(syms, false); if (Object.keys(map).length) used='yahoo'; } catch {} }
+    if (used==='none') { try { map = await fetchYahooBatch(syms, true ); if (Object.keys(map).length) used='yahoo-proxy'; } catch {} }
+  } else {
+    // 默认 / 选择 Yahoo：先直连，再代理，最后 Stooq 兜底
+    try { map = await fetchYahooBatch(syms, false); if (Object.keys(map).length) used='yahoo'; } catch {}
+    if (used==='none') { try { map = await fetchYahooBatch(syms, true ); if (Object.keys(map).length) used='yahoo-proxy'; } catch {} }
+    if (used==='none') { try { map = await fetchStooqBatch(syms);        if (Object.keys(map).length) used='stooq'; } catch {} }
+  }
+
+  // 写入结果：只有有价时才更新时间；没价则时间留空
+  for (const r of items){
+    const q = map[(r.symbol||'').toUpperCase()];
+    if (q && Number.isFinite(q.price) && q.price > 0) {
+      r._livePrice = q.price;
+      r._liveTime  = q.time || Date.now();
+    } else {
+      r._livePrice = 0;
+      r._liveTime  = 0; // 这样你在渲染里就不会显示时间
+    }
+  }
+
+  render(); // 或 applyFilters()+render()，视你项目而定
 }
+
 
 function bind(){
   document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter'){ state.q=e.target.value; state.page=1; render(); }});
