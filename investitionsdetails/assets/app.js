@@ -182,87 +182,103 @@ function render(){
   document.getElementById('countTag').textContent = `${total} Einträge`;
 
   // desktop table
-  const tbody = document.getElementById('tbody'); tbody.innerHTML='';
-  for(const r of items){
-    const pct = plPct(r), amt = plAmt(r), cur = r.currency;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>
-        <div class="mono">${esc(r.symbol)}</div>
-        <div class="muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
-        <div><span class="muted">${esc(r.name||'—')}</span><span class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</span></div>
-      </td>
-      <td>
-        <div>${money(r.recPrice, cur)}</div>
-        <div class="muted">${esc(r.recDate)} · <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div>
-      </td>
-      <td>
-        <div class="mono">${money(r._livePrice||0, cur)}</div>
-        <div class="muted">${r._liveTime? new Date(r._liveTime).toLocaleTimeString('de-DE') : ''}</div>
-      </td>
-      <td>
-        <div class="mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)}</div>
-        <div class="muted">${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div>
-      </td>
-      <td>
+const tbody = document.getElementById('tbody'); 
+tbody.innerHTML = '';
+for (const r of items) {
+  const pct = plPct(r), amt = plAmt(r), cur = r.currency;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>
+      <div class="mono">${esc(r.symbol)}</div>
+      <div class="muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
+      <div><span class="muted">${esc(r.name||'—')}</span><span class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</span></div>
+    </td>
+    <td>
+      <div>${money(r.recPrice, cur)}</div>
+      <div class="muted">${esc(r.recDate)} · <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div>
+    </td>
+    <td>
+      <div class="mono">${money(r._livePrice||0, cur)}</div>
+      <div class="muted">${r._liveTime? new Date(r._liveTime).toLocaleTimeString('de-DE') : ''}</div>
+    </td>
+    <td>
+      <div class="mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)}</div>
+      <div class="muted">${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div>
+    </td>
+    <td>
+      <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
+      ${r.status==='sold'
+        ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
+        : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
+      }
+    </td>
+    <td class="reason-cell">
+      <span class="reason-text">${esc(r.reason || '—')}</span>
+      ${(r.reason||'').length>200 ? '<button class="reason-toggle" type="button">Mehr</button>' : ''}
+    </td>`;
+  tbody.appendChild(tr);
+
+  // 展开/收起（桌面）
+  const cell = tr.querySelector('.reason-cell');
+  const btn  = cell?.querySelector('.reason-toggle');
+  if (btn) {
+    btn.addEventListener('click', ()=>{
+      const expanded = cell.classList.toggle('expanded');
+      btn.textContent = expanded ? 'Weniger' : 'Mehr';
+    });
+  }
+}
+
+  // mobile cards
+const cards = document.getElementById('cards'); 
+cards.innerHTML = '';
+for (const r of items) {
+  const pct = plPct(r), amt = plAmt(r), cur = r.currency;
+  const card = document.createElement('article');
+  card.className = 'card';
+
+  const shortReason = (r.reason||'').length>120 ? `${esc(r.reason.slice(0,120))}…` : esc(r.reason||'');
+  const showMore    = (r.reason||'').length>120;
+
+  card.innerHTML = `
+    <div class="head">
+      <div>
+        <div class="mono symbol">${esc(r.symbol)}</div>
+        <div class="name">${esc(r.name||'—')}</div>
+        <div class="wkn muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
+      </div>
+      <div class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</div>
+    </div>
+    <div class="meta">
+      <div class="kv"><div class="k">Empfehlung</div><div class="v">${money(r.recPrice, cur)} · ${esc(r.recDate)} <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div></div>
+      <div class="kv"><div class="k">Aktuell</div><div class="v mono">${money(r._livePrice||0, cur)}</div></div>
+      <div class="kv"><div class="k">Gewinn/Verlust</div><div class="v mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)} · ${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div></div>
+      <div class="kv"><div class="k">Status</div><div class="v">
         <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
         ${r.status==='sold'
           ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
           : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
         }
-      </td>
-      <td class="reason-cell">
-        <span class="reason-text">${esc(r.reason||'—')}</span>
-        ${ (r.reason||'').length>200 ? '<span class="more">Mehr</span>' : ''}
-      </td>`;
-    tbody.appendChild(tr);
-    const more = tr.querySelector('.reason-cell .more');
-    if(more){
-      more.addEventListener('click', ()=>{
-        const span = tr.querySelector('.reason-cell .reason-text');
-        span.style.display = 'inline'; span.style.webkitLineClamp = 'unset'; span.style.webkitBoxOrient = 'unset'; span.style.overflow = 'visible';
-        more.remove();
-      });
-    }
-  }
+      </div></div>
+    </div>
+    <div class="reason ${showMore?'':''}">
+      <span class="reason-text">${shortReason}</span>
+      ${ showMore ? '<button class="reason-toggle" type="button">Mehr</button>' : '' }
+    </div>`;
+  cards.appendChild(card);
 
-  // mobile cards
-  const cards = document.getElementById('cards'); cards.innerHTML='';
-  for(const r of items){
-    const pct = plPct(r), amt = plAmt(r), cur = r.currency;
-    const card = document.createElement('article');
-    card.className = 'card';
-    const shortReason = (r.reason||'').length>120 ? `${esc(r.reason.slice(0,120))}…` : esc(r.reason||'');
-    const showMore = (r.reason||'').length>120;
-    card.innerHTML = `
-      <div class="head">
-        <div>
-          <div class="mono symbol">${esc(r.symbol)}</div>
-          <div class="name">${esc(r.name||'—')}</div>
-          <div class="wkn muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
-        </div>
-        <div class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</div>
-      </div>
-      <div class="meta">
-        <div class="kv"><div class="k">Empfehlung</div><div class="v">${money(r.recPrice, cur)} · ${esc(r.recDate)} <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div></div>
-        <div class="kv"><div class="k">Aktuell</div><div class="v mono">${money(r._livePrice||0, cur)}</div></div>
-        <div class="kv"><div class="k">Gewinn/Verlust</div><div class="v mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)} · ${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div></div>
-        <div class="kv"><div class="k">Status</div><div class="v">
-          <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
-          ${r.status==='sold'
-            ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
-            : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
-          }
-        </div></div>
-      </div>
-      <div class="reason">${shortReason}${showMore?'<span class="more" role="button" tabindex="0">Mehr</span>':''}</div>`;
-    cards.appendChild(card);
-    if(showMore){
-      const btn = card.querySelector('.more');
-      btn.addEventListener('click', ()=>{ btn.previousSibling.textContent = r.reason; btn.remove(); });
-      btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); btn.click(); } });
-    }
+  // 展开/收起（移动）
+  const rbox = card.querySelector('.reason');
+  const rbtn = rbox?.querySelector('.reason-toggle');
+  if (rbtn){
+    rbtn.addEventListener('click', ()=>{
+      const expanded = rbox.classList.toggle('expanded');
+      const span = rbox.querySelector('.reason-text');
+      if (expanded) { span.textContent = r.reason || '—'; rbtn.textContent = 'Weniger'; }
+      else { span.textContent = (r.reason||'').length>120 ? r.reason.slice(0,120)+'…' : (r.reason||'—'); rbtn.textContent = 'Mehr'; }
+    });
   }
+}
 
   // pager
   const pager = document.getElementById('pager'); pager.innerHTML='';
