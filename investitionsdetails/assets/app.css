@@ -47,7 +47,7 @@ td{word-break:break-word}
 .kv .k{color:var(--muted);font-size:12px}
 .kv .v{font-weight:800;margin-top:2px}
 .card .reason{color:#cfd6e9;margin-top:8px}
-.more{color:#9ec3ff;cursor:pointer;text-decoration:underline;margin-left:6px;user-select:none}
+
 
 /* Responsive */
 @media (max-width: 900px){
@@ -66,5 +66,33 @@ td{word-break:break-word}
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.reason-cell .more{ margin-left: 6px; color:#9ec3ff; cursor:pointer; text-decoration:underline; user-select:none; }
+
 .wkn{font-size:12px;color:var(--muted)}
+/* 理由文本：默认收起 3 行（桌面 + 手机一致） */
+.reason-cell .reason-text,
+.card .reason .reason-text{
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient: vertical;
+  overflow:hidden;
+  white-space:pre-line;     /* 收起时保留换行但不撕版 */
+}
+
+/* 展开状态：取消截断，允许自然换行 */
+.reason-cell.expanded .reason-text,
+.card .reason.expanded .reason-text{
+  -webkit-line-clamp:unset;
+  display:block;
+  white-space:pre-wrap;     /* 展开时多行段落更自然 */
+}
+
+/* “Mehr/Weniger” 按钮外观（像链接） */
+.reason-toggle{
+  margin-left:.5rem;
+  font-size:12px;
+  color:#9ec3ff;            /* 和你原来 .more 同色系 */
+  text-decoration:underline;
+  background:none;
+  border:0;
+  cursor:pointer;
+}
