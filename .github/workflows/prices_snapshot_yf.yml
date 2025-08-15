@@ -1,0 +1,41 @@
+name: Prices Snapshot (yfinance → prices.json)
+
+on:
+  workflow_dispatch:           # 手动运行
+  schedule:
+    - cron: "*/5 * * * *"      # 每 5 分钟跑一次（可按需改大/改小）
+  push:
+    paths:
+      - investitionsdetails/data/recommendations.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot-prices
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install yfinance pandas
+
+      - name: Generate prices.json via yfinance
+        run: python backend/snapshot_yf.py
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(prices): snapshot via yfinance"
+          file_pattern: investitionsdetails/data/prices.json
