@@ -1,82 +1,8 @@
 [
-  {
-    "id": "sap",
-    "symbol": "SAP.DE",
-    "name": "SAP",
-    "recPrice": 185.2,
-    "recDate": "2025-08-12",
-    "horizon": "Langfristig",
-    "reason": "Cloud- & SaaS-Wachstum, Margenverbesserung.",
-    "status": "open",
-    "managerConfirmed": false,
-    "plan": "paid",
-    "currency": "EUR"
-  },
-  {
-    "id": "rhm",
-    "symbol": "RHM.DE",
-    "name": "Rheinmetall",
-    "recPrice": 550.0,
-    "recDate": "2025-08-10",
-    "horizon": "Kurzfristig",
-    "reason": "Auftragsbestand & Kapazitätsausbau, technisches Momentum.",
-    "status": "open",
-    "managerConfirmed": false,
-    "plan": "paid",
-    "currency": "EUR"
-  },
-  {
-    "id": "sie",
-    "symbol": "SIE.DE",
-    "name": "Siemens",
-    "recPrice": 178.4,
-    "recDate": "2025-08-05",
-    "horizon": "Langfristig",
-    "reason": "Automatisierung & Digital Industries, hoher Auftragseingang.",
-    "status": "open",
-    "managerConfirmed": false,
-    "plan": "free",
-    "currency": "EUR"
-  },
-  {
-    "id": "basf",
-    "symbol": "BAS.DE",
-    "name": "BASF",
-    "recPrice": 47.3,
-    "recDate": "2025-07-25",
-    "horizon": "Kurzfristig",
-    "reason": "Zyklische Erholung + Kostenhebel.",
-    "status": "sold",
-    "managerConfirmed": true,
-    "soldPrice": 51.8,
-    "soldDate": "2025-08-14",
-    "plan": "free",
-    "currency": "EUR"
-  },
-  {
-    "id": "alv",
-    "symbol": "ALV.DE",
-    "name": "Allianz",
-    "recPrice": 265.0,
-    "recDate": "2025-08-01",
-    "horizon": "Langfristig",
-    "reason": "Stetige Dividende, Kombination Versicherung & Asset Management.",
-    "status": "open",
-    "managerConfirmed": false,
-    "plan": "paid",
-    "currency": "EUR"
-  },
-  {
-    "id": "mbg",
-    "symbol": "MBG.DE",
-    "name": "Mercedes-Benz Group",
-    "recPrice": 63.5,
-    "recDate": "2025-08-08",
-    "horizon": "Kurzfristig",
-    "reason": "Premium-Mix & Aktienrückkäufe.",
-    "status": "open",
-    "managerConfirmed": false,
-    "plan": "free",
-    "currency": "EUR"
-  }
+  {"id":"sap","symbol":"SAP.DE","name":"SAP","wkn":"716460","recPrice":185.2,"recDate":"2025-08-12","horizon":"Langfristig","reason":"Cloud- & SaaS-Wachstum, Margenverbesserung.","status":"open","managerConfirmed":false,"plan":"paid","currency":"EUR"},
+  {"id":"rhm","symbol":"RHM.DE","name":"Rheinmetall","wkn":"703000","recPrice":550.0,"recDate":"2025-08-10","horizon":"Kurzfristig","reason":"Auftragsbestand & Kapazitätsausbau, technisches Momentum.","status":"open","managerConfirmed":false,"plan":"paid","currency":"EUR"},
+  {"id":"sie","symbol":"SIE.DE","name":"Siemens","wkn":"723610","recPrice":178.4,"recDate":"2025-08-05","horizon":"Langfristig","reason":"Automatisierung & Digital Industries, hoher Auftragseingang.","status":"open","managerConfirmed":false,"plan":"free","currency":"EUR"},
+  {"id":"basf","symbol":"BAS.DE","name":"BASF","wkn":"BASF11","recPrice":47.3,"recDate":"2025-07-25","horizon":"Kurzfristig","reason":"Zyklische Erholung + Kostenhebel.","status":"sold","managerConfirmed":true,"soldPrice":51.8,"soldDate":"2025-08-14","plan":"free","currency":"EUR"},
+  {"id":"alv","symbol":"ALV.DE","name":"Allianz","wkn":"840400","recPrice":265.0,"recDate":"2025-08-01","horizon":"Langfristig","reason":"Stetige Dividende, Kombination Versicherung & Asset Management.","status":"open","managerConfirmed":false,"plan":"paid","currency":"EUR"},
+  {"id":"mbg","symbol":"MBG.DE","name":"Mercedes-Benz Group","wkn":"710000","recPrice":63.5,"recDate":"2025-08-08","horizon":"Kurzfristig","reason":"Premium-Mix & Aktienrückkäufe.","status":"open","managerConfirmed":false,"plan":"free","currency":"EUR"}
 ]
