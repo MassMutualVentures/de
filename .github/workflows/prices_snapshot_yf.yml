@@ -3,7 +3,7 @@ name: Prices Snapshot (yfinance → prices.json)
 on:
   workflow_dispatch:           # 手动运行
   schedule:
-    - cron: "*/5 * * * *"      # 每 5 分钟跑一次（可按需改大/改小）
+    - cron: "*/5 * * * *"      # 每 5 分钟；可按需调大
   push:
     paths:
       - investitionsdetails/data/recommendations.json
@@ -21,15 +21,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 这里使用 pip 缓存，并指定依赖文件路径
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
+          cache-dependency-path: "backend/requirements.txt"
 
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install yfinance pandas
+          pip install -r backend/requirements.txt
 
       - name: Generate prices.json via yfinance
         run: python backend/snapshot_yf.py
