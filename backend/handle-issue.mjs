@@ -46,6 +46,7 @@ if(labels.includes('reco-new')){
   const rec = {
     id: uid(),
     symbol: form['Symbol'] || '',
+    wkn: (form['WKN'] || '').replace(/\s/g, ''),
     name: form['Name'] || '',
     recPrice: toNum(form['Empfehlungspreis']) ?? 0,
     recDate: form['Empfehlungsdatum'] || new Date().toISOString().slice(0,10),
@@ -70,6 +71,7 @@ else if(labels.includes('reco-edit')){
   const before = JSON.parse(JSON.stringify(r));
   const patch = {
     symbol: form['Symbol']||undefined,
+    wkn: (form['WKN'] !== undefined ? form['WKN'] : undefined),
     name: form['Name']||undefined,
     recPrice: toNum(form['Empfehlungspreis']),
     recDate: form['Empfehlungsdatum']||undefined,
@@ -92,7 +94,7 @@ else if(labels.includes('reco-import')){
   const mode = (form['Modus']||'merge').toLowerCase();
   let arr = []; try{ arr = JSON.parse(form['JSON-Array']||'[]'); }catch{ arr=[]; }
   const normalized = arr.map(x=>({
-    id: x.id || uid(), symbol: x.symbol||'', name: x.name||'', recPrice: Number(x.recPrice||0), recDate: x.recDate||new Date().toISOString().slice(0,10),
+    id: x.id || uid(), symbol: x.symbol||'',wkn: x.wkn || '', name: x.name||'', recPrice: Number(x.recPrice||0), recDate: x.recDate||new Date().toISOString().slice(0,10),
     horizon: x.horizon||'Kurzfristig', reason: x.reason||'', status: (x.status==='sold'?'sold':'open'), managerConfirmed: !!x.managerConfirmed,
     soldPrice: (x.soldPrice!=null? Number(x.soldPrice):undefined), soldDate: x.soldDate, plan: (x.plan==='paid'?'paid':'free'),
     createdAt: x.createdAt||Date.now(), updatedAt: Date.now(), currency: x.currency || detectCurrency(x.symbol), history: Array.isArray(x.history)? x.history: []
