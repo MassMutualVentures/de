@@ -159,9 +159,10 @@ function applyFilters(){
   if(state.status!=='all') arr = arr.filter(r=> r.status===state.status);
   if(state.horizon!=='all') arr = arr.filter(r=> r.horizon===state.horizon);
   arr.sort((a,b)=>{
+    const dnum = d => d ? Number(String(d).replaceAll('-','')) : 0; // 2025-08-15 → 20250815
+    if(state.sort==='recDate_desc') return dnum(b.recDate) - dnum(a.recDate);
     if(state.sort==='updatedAt_desc') return (b.updatedAt||0)-(a.updatedAt||0);
     if(state.sort==='pl_desc') return ((plPct(b)||-Infinity) - (plPct(a)||-Infinity));
-    if(state.sort==='recDate_desc') return (a.recDate<b.recDate)?1:-1;
     if(state.sort==='symbol_asc') return (a.symbol||'').localeCompare(b.symbol||'');
     return 0;
   });
@@ -326,6 +327,7 @@ function bind(){
   document.getElementById('fStatus').onchange = e=>{ state.status=e.target.value; state.page=1; render(); };
   document.getElementById('fHorizon').onchange = e=>{ state.horizon=e.target.value; state.page=1; render(); };
   document.getElementById('sortBy').onchange = e=>{ state.sort=e.target.value; render(); };
+  document.getElementById('sortBy').value = state.sort;
   document.getElementById('pageSize').onchange = e=>{ state.pageSize=Number(e.target.value); state.page=1; render(); };
   document.getElementById('priceSource').onchange = e=>{ state.priceSource=e.target.value; refreshPrices().then(render); };
   document.getElementById('btnRefresh').onclick = ()=>{ refreshPrices().then(render); };
