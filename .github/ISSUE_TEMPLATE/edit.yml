@@ -1,58 +1,85 @@
 name: Empfehlung ändern
 description: Bestehende Empfehlung per ID ändern
-labels: [reco-edit]
+labels:
+  - reco-edit
 body:
   - type: input
     id: id
     attributes:
       label: Datensatz-ID
-      description: In investitionsdetails/data/recommendations.json zu finden
+      description: "In investitionsdetails/data/recommendations.json oder im Bot-Kommentar zu finden"
+      placeholder: "id_ab12cd34"
     validations:
       required: true
+
   - type: input
     id: symbol
     attributes:
       label: Symbol (optional)
+      placeholder: "SAP.DE"
+
   - type: input
     id: name
     attributes:
       label: Name (optional)
+      placeholder: "SAP"
+
   - type: dropdown
     id: plan
     attributes:
       label: Typ (optional)
-      options: [Kostenlos, Kostenpflichtig]
+      options:
+        - Kostenlos
+        - Kostenpflichtig
+
   - type: input
     id: recPrice
     attributes:
       label: Empfehlungspreis (optional)
+      placeholder: "185.2"
+
   - type: input
     id: recDate
     attributes:
       label: Empfehlungsdatum (optional)
+      placeholder: "2025-08-15"
+
   - type: dropdown
     id: horizon
     attributes:
       label: Zielhorizont (optional)
-      options: [Kurzfristig, Langfristig]
+      options:
+        - Kurzfristig
+        - Langfristig
+
   - type: dropdown
     id: status
     attributes:
       label: Status (optional)
-      options: [open, sold]
+      options:
+        - open
+        - sold
+
   - type: dropdown
     id: manager
     attributes:
       label: Manager bestätigt Verkauf (optional)
-      options: [Nein, Ja]
+      options:
+        - Nein
+        - Ja
+
   - type: input
     id: soldPrice
     attributes:
       label: Verkaufspreis (optional)
+      placeholder: "51.80"
+
   - type: input
     id: soldDate
     attributes:
       label: Verkaufsdatum (optional)
+      placeholder: "2025-08-14"
+
   - type: textarea
     id: reason
     attributes:
