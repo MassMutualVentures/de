@@ -131,34 +131,35 @@ function render(){
   for(const r of items){
     const pct = plPct(r), amt = plAmt(r), cur = r.currency;
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>
-        <div class="mono">${esc(r.symbol)}</div>
-        <div><span class="muted">${esc(r.name||'—')}</span><span class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</span></div>
-      </td>
-      <td>
-        <div>${money(r.recPrice, cur)}</div>
-        <div class="muted">${esc(r.recDate)} · <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div>
-      </td>
-      <td>
-        <div class="mono">${money(r._livePrice||0, cur)}</div>
-        <div class="muted">${r._liveTime? new Date(r._liveTime).toLocaleTimeString('de-DE') : ''}</div>
-      </td>
-      <td>
-        <div class="mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)}</div>
-        <div class="muted">${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div>
-      </td>
-      <td>
-        <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
-        ${r.status==='sold'
-          ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
-          : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
-        }
-      </td>
-      <td class="reason-cell">
-        <span class="reason-text">${esc(r.reason||'—')}</span>
-        ${ (r.reason||'').length>200 ? '<span class="more">Mehr</span>' : ''}
-      </td>`;
+  tr.innerHTML = `
+    <td>
+      <div class="mono">${esc(r.symbol)}</div>
+      <div class="muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
+      <div><span class="muted">${esc(r.name||'—')}</span><span class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</span></div>
+    </td>
+    <td>
+      <div>${money(r.recPrice, cur)}</div>
+      <div class="muted">${esc(r.recDate)} · <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div>
+    </td>
+    <td>
+      <div class="mono">${money(r._livePrice||0, cur)}</div>
+      <div class="muted">${r._liveTime? new Date(r._liveTime).toLocaleTimeString('de-DE') : ''}</div>
+    </td>
+    <td>
+      <div class="mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)}</div>
+      <div class="muted">${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div>
+    </td>
+    <td>
+      <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
+      ${r.status==='sold'
+        ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
+        : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
+      }
+    </td>
+    <td class="reason-cell">
+      <span class="reason-text">${esc(r.reason||'—')}</span>
+      ${ (r.reason||'').length>200 ? '<span class="more">Mehr</span>' : ''}
+    </td>`;
     tbody.appendChild(tr);
       // Toggle 'Mehr' on desktop rows
       const more = tr.querySelector('.reason-cell .more');
@@ -184,6 +185,7 @@ function render(){
         <div>
           <div class="mono symbol">${esc(r.symbol)}</div>
           <div class="name">${esc(r.name||'—')}</div>
+          <div class="wkn muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
         </div>
         <div class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</div>
       </div>
