@@ -1,0 +1,37 @@
+name: Prices Snapshot (Finnhub → prices.json)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"           # 每 15 分钟
+  push:
+    paths:
+      - investitionsdetails/data/recommendations.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot-prices
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate prices.json via Finnhub
+        env:
+          FINNHUB_KEY: ${{ secrets.FINNHUB_KEY }}
+        run: node backend/snapshot-prices.mjs
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(prices): snapshot via Finnhub"
+          file_pattern: investitionsdetails/data/prices.json
