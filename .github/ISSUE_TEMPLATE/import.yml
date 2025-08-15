@@ -1,19 +1,38 @@
 name: Import (JSON)
 description: Mehrere Einträge per JSON importieren
-labels: [reco-import]
+labels:
+  - reco-import
 body:
   - type: textarea
     id: payload
     attributes:
       label: JSON-Array
-      description: Format: [ {...}, {...} ], Felder wie in investitionsdetails/data/recommendations.json (plan: 'paid'|'free')
+      description: "Format: [ {...}, {...} ], Felder wie in investitionsdetails/data/recommendations.json (plan: 'paid'|'free')"
       render: json
+      placeholder: |
+        [
+          {
+            "id": "demo_sap",
+            "symbol": "SAP.DE",
+            "name": "SAP",
+            "recPrice": 185.2,
+            "recDate": "2025-08-15",
+            "horizon": "Langfristig",
+            "reason": "Beispiel",
+            "status": "open",
+            "managerConfirmed": false,
+            "plan": "paid",
+            "currency": "EUR"
+          }
+        ]
     validations:
       required: true
+
   - type: dropdown
     id: mode
     attributes:
       label: Modus
-      options: [merge, replace]
-      description: merge = nach ID zusammenführen, replace = alles ersetzen
-      default: 0
+      description: "merge = nach ID zusammenführen, replace = alles ersetzen"
+      options:
+        - merge
+        - replace
