@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Investitionsdetails – Leistungsübersicht</title>
+  <meta name="description" content="Leistungsübersicht unserer Aktien-Empfehlungen: Kursentwicklung, Gewinn/Verlust, Status (verkauft/laufend), Begründung. Optimiert für Desktop & Mobil." />
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="row">
+        <h1>📊 Investitionsdetails</h1>
+        <div class="actions">
+          <label class="tag">Preisquelle
+            <select id="priceSource">
+              <option value="yahoo">Yahoo</option>
+              <option value="stooq">Stooq</option>
+            </select>
+          </label>
+          <button class="btn" id="btnRefresh" title="Kurse aktualisieren">Aktualisieren</button>
+        </div>
+      </div>
+      <div class="filters" id="filters">
+        <input id="q" type="search" inputmode="search" placeholder="Suche: Symbol / Name / Begründung (Enter)" aria-label="Suche" />
+        <select id="fStatus" aria-label="Status filtern">
+          <option value="all">Status: Alle</option>
+          <option value="open">Laufend</option>
+          <option value="sold">Verkauft</option>
+        </select>
+        <select id="fHorizon" aria-label="Zielhorizont filtern">
+          <option value="all">Ziel: Alle</option>
+          <option value="Kurzfristig">Kurzfristig</option>
+          <option value="Langfristig">Langfristig</option>
+        </select>
+        <select id="fPlan" aria-label="Typ filtern">
+          <option value="all">Typ: Alle</option>
+          <option value="paid">Kostenpflichtig</option>
+          <option value="free">Kostenlos</option>
+        </select>
+        <select id="sortBy" aria-label="Sortierung">
+          <option value="updatedAt_desc">Neueste Änderung</option>
+          <option value="pl_desc">Gewinn/Verlust %</option>
+          <option value="recDate_desc">Empfohlen am</option>
+          <option value="symbol_asc">Symbol A–Z</option>
+        </select>
+        <select id="pageSize" aria-label="Einträge pro Seite">
+          <option value="10">10 / Seite</option>
+          <option value="20">20 / Seite</option>
+          <option value="50">50 / Seite</option>
+        </select>
+        <span class="tag" id="countTag">0 Einträge</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="table-card desktop-only" aria-label="Leistungsübersicht Tabelle">
+      <table id="table" class="grid">
+        <colgroup>
+          <col style="width: 18rem;" />
+          <col style="width: 16rem;" />
+          <col style="width: 12rem;" />
+          <col style="width: 12rem;" />
+          <col style="width: 11rem;" />
+          <col />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Symbol / Name / Typ</th>
+            <th>Empfehlung (Preis / Datum / Ziel)</th>
+            <th>Aktueller Preis</th>
+            <th>Gewinn/Verlust</th>
+            <th>Status</th>
+            <th>Begründung</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+
+    <section class="cards mobile-only" id="cards" aria-label="Leistungsübersicht Karten"></section>
+
+    <nav id="pager" class="pager" aria-label="Seitenwechsel"></nav>
+
+    <p class="hint">
+      Hinweis: Kurse sind verzögert. Wenn keine Kursquelle gefunden wird, wird <strong>0</strong> angezeigt. EUR für deutsche Tickers (z.&nbsp;B. *.DE), sonst USD.
+    </p>
+  </main>
+
+  <script src="./assets/app.js"></script>
+</body>
+</html>
