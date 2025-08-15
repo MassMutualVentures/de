@@ -1,9 +1,9 @@
 name: Prices Snapshot (yfinance → prices.json)
 
 on:
-  workflow_dispatch:           # 手动运行
+  workflow_dispatch:           # 手动运行（Actions 页 “Run workflow”）
   schedule:
-    - cron: "*/5 * * * *"      # 每 5 分钟；可按需调大
+    - cron: "*/5 * * * *"      # 每 5 分钟；UTC
   push:
     paths:
       - investitionsdetails/data/recommendations.json
@@ -21,7 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 这里使用 pip 缓存，并指定依赖文件路径
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
