@@ -1,152 +1,177 @@
 // backend/handle-issue.mjs
-// - 清洗 Issue Forms 文本：去除 ```text ... ``` 代码围栏、去掉 "No response"
-// - snapshot() 去掉 history，避免循环引用
-// - 兼容 "WKN (optional)" 字段
-// - 防重复：同一个 Issue（issue.number）多次触发时只更新，不新增
+// 单一真源：investitionsdetails/data/recommendations.json
+// 处理 3 个标签：reco-new / reco-edit / reco-import
 
 import fs from 'fs';
 import path from 'path';
 
+// -------- load event --------
 const eventPath = process.env.GITHUB_EVENT_PATH;
 if (!eventPath) { console.error('GITHUB_EVENT_PATH fehlt'); process.exit(1); }
 const event = JSON.parse(fs.readFileSync(eventPath, 'utf8'));
 const issue = event.issue;
 if (!issue) { console.error('Issue fehlt'); process.exit(1); }
 
-const issueNo = issue.number;
 const labels = (issue.labels || []).map(l => (typeof l === 'string' ? l : l.name));
 const body = issue.body || '';
-const repoRoot = process.cwd();
-const dataFile = path.join(repoRoot, 'investitionsdetails', 'data', 'recommendations.json');
 
-// ---------- utils ----------
+const repoRoot = process.cwd();
+const dataFile   = path.join(repoRoot, 'investitionsdetails', 'data', 'recommendations.json');
+const resultFile = path.join(repoRoot, 'backend', '.result.md');
+
+// -------- utils --------
 function readJsonSafe(p){ try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return []; } }
 function writeJson(p, obj){ fs.writeFileSync(p, JSON.stringify(obj, null, 2) + '\n', 'utf8'); }
-function uid(){ return 'id_' + Math.random().toString(36).slice(2, 10); }
+function uid(){ return 'id_' + Math.random().toString(36).slice(2,10); }
 function detectCurrency(symbol){ return /\.[dD][eE]$/.test(symbol || '') ? 'EUR' : 'USD'; }
-function toNum(v){ if (v==null || v==='') return undefined; const n=Number((v||'').toString().replace(',','.')); return isNaN(n) ? undefined : n; }
+function toNum(v){ if (v==null || v==='') return undefined; const n = Number(String(v).replace(',', '.')); return Number.isFinite(n) ? n : undefined; }
 function planFrom(v){ return /kostenpflichtig|paid/i.test(v||'') ? 'paid' : 'free'; }
-function pick(obj, keys){ const r={}; for (const k of keys){ if (obj[k] !== undefined && obj[k] !== '') r[k]=obj[k]; } return r; }
-
-// 去掉 ```text / ``` 围栏 & 清除 "No response"
-function stripCodeFences(val){
-  if (!val) return '';
-  const trimmed = String(val).trim();
-  if (/^no response$/i.test(trimmed)) return '';
-  // 完整围栏 ```lang ... ```
-  const m = trimmed.match(/^```[a-z]*\s*([\s\S]*?)\s*```$/i);
-  if (m) return m[1].trim();
-  // 宽松：去掉起始 ```lang 与末尾 ```
-  return trimmed.replace(/^```[a-z]*\s*/i,'').replace(/```$/,'').trim();
+function pick(obj, keys){ const r={}; for (const k of keys){ if (obj[k] !== undefined) r[k]=obj[k]; } return r; }
+function stripCodeFences(s){
+  if (!s) return '';
+  let t = String(s).trim();
+  if (/^```/.test(t)) t = t.replace(/^```(?:[a-zA-Z]*)?\s*/,'').replace(/\s*```$/,'');
+  return t.trim();
 }
 function parseIssueFormMarkdown(md){
+  const map = {};
   const re = /###\s+([^\n]+)\n([\s\S]*?)(?=\n###\s+|$)/g;
-  const map = {}; let m;
-  while ((m = re.exec(md))) {
+  let m; while ((m = re.exec(md))) {
     const key = m[1].trim();
-    const raw = (m[2] || '').trim();
-    map[key] = stripCodeFences(raw);
+    let val = (m[2] || '').trim();
+    if (/^no response$/i.test(val)) val = '';
+    map[key] = val;
   }
   return map;
 }
-
-// 拍快照时去掉 history，避免循环引用
-function snapshot(obj){
-  if (!obj) return null;
-  const { history, ...rest } = obj;
+function snapshot(o){
+  if (!o) return null;
+  const { history, ...rest } = o;
   return JSON.parse(JSON.stringify(rest));
 }
-
-// 兼容 "WKN" 与 "WKN (optional)"
-function getWKN(form){ return (form['WKN'] || form['WKN (optional)'] || '').replace(/\s/g,''); }
-
-// 统一拿“推荐理由”
-function getReason(form){
-  return (
-    form['Begründung (kundenseitig sichtbar)'] ??
-    form['Begründung'] ??
-    form['reason'] ??
-    ''
-  );
-}
-
 function diff(before, after){
   const keys = new Set([...(before?Object.keys(before):[]), ...(after?Object.keys(after):[])]);
-  const d=[]; for (const k of keys){ const b=before?.[k]; const a=after?.[k]; if (JSON.stringify(b)!==JSON.stringify(a)) d.push({field:k,from:b,to:a}); }
-  return d;
+  const out = [];
+  for (const k of keys){
+    const b = before?.[k], a = after?.[k];
+    if (JSON.stringify(b) !== JSON.stringify(a)) out.push({ field:k, from:b, to:a });
+  }
+  return out;
 }
-
-const db = readJsonSafe(dataFile);
-const form = parseIssueFormMarkdown(body);
-
 function save(newDb, msg){
   newDb.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
   writeJson(dataFile, newDb);
-  fs.writeFileSync(path.join(repoRoot,'backend','.result.md'), msg, 'utf8');
+  fs.writeFileSync(resultFile, msg + '\n', 'utf8');
 }
+function getWKN(form){ return (form['WKN'] || form['WKN (optional)'] || '').replace(/\s/g,''); }
 
-// ---------- handlers ----------
-if (labels.includes('reco-new')) {
-  // 防重复：同一个 Issue 再次触发则更新同一条
-  let r = db.find(x => x._sourceIssue === issueNo);
-  if (!r) {
-    r = {
+// -------- main --------
+const db   = readJsonSafe(dataFile);
+const form = parseIssueFormMarkdown(body);
+
+async function main(){
+  // --- 新增 ---
+  if (labels.includes('reco-new')) {
+    const rec = {
       id: uid(),
-      _sourceIssue: issueNo, // 记住来源 Issue
-      symbol: '',
-      name: '',
-      wkn: '',
-      recPrice: 0,
-      recDate: new Date().toISOString().slice(0,10),
-      horizon: 'Kurzfristig',
-      reason: '',
-      status: 'open',
-      managerConfirmed: false,
-      soldPrice: undefined,
-      soldDate: undefined,
-      plan: 'free',
-      currency: 'EUR',
+      symbol: form['Symbol'] || '',
+      name: form['Name'] || '',
+      wkn: getWKN(form) || '',
+      recPrice: toNum(form['Empfehlungspreis']) ?? 0,
+      recDate: form['Empfehlungsdatum'] || new Date().toISOString().slice(0,10),
+      horizon: form['Zielhorizont'] || 'Kurzfristig',
+      reason: stripCodeFences(form['Begründung (kundenseitig sichtbar)'] || form['Begründung'] || ''),
+      status: (form['Status']||'open').toLowerCase()==='sold' ? 'sold' : 'open',
+      managerConfirmed: /^(true|ja|yes)$/i.test(form['Manager bestätigt Verkauf']||''),
+      soldPrice: toNum(form['Verkaufspreis (optional)']),
+      soldDate: form['Verkaufsdatum (optional)'] || undefined,
+      plan: planFrom(form['Typ']||''),
+      currency: detectCurrency(form['Symbol']||''),
       createdAt: Date.now(),
       updatedAt: Date.now(),
       history: []
     };
-    db.push(r);
+    const snap = snapshot(rec);
+    rec.history.push({ t: Date.now(), type:'create', before:null, after:snap });
+    db.push(rec);
+    save(db, `✅ Neu: **${rec.symbol}** (ID ${rec.id}, ${rec.plan==='paid'?'Kostenpflichtig':'Kostenlos'})`);
+    return;
   }
 
-  const before = snapshot(r);
+  // --- 修改 ---
+  if (labels.includes('reco-edit')) {
+    const id = form['Datensatz-ID'] || form['ID'] || '';
+    const r = db.find(x=>x.id===id);
+    if(!r){ save(db, `❌ Nicht gefunden: ID ${id}`); return; }
 
-  // 用表单值覆盖
-  r.symbol = form['Symbol'] || r.symbol || '';
-  r.name = form['Name'] || r.name || '';
-  r.wkn = getWKN(form) || r.wkn || '';
-  r.recPrice = toNum(form['Empfehlungspreis']) ?? r.recPrice ?? 0;
-  r.recDate = form['Empfehlungsdatum'] || r.recDate || new Date().toISOString().slice(0,10);
-  r.horizon = form['Zielhorizont'] || r.horizon || 'Kurzfristig';
-  r.reason = getReason(form) || r.reason || '';
-  r.status = (form['Status']||r.status||'open').toLowerCase()==='sold' ? 'sold' : 'open';
-  r.managerConfirmed = (form['Manager bestätigt Verkauf'] ? /^(true|ja|yes)$/i.test(form['Manager bestätigt Verkauf']) : r.managerConfirmed);
-  r.soldPrice = toNum(form['Verkaufspreis (optional)']) ?? r.soldPrice;
-  r.soldDate  = (form['Verkaufsdatum (optional)'] || r.soldDate);
-  r.plan = planFrom(form['Typ']||r.plan);
-  r.currency = r.currency || detectCurrency(r.symbol);
-  r.updatedAt = Date.now();
+    const before = snapshot(r);
+    const patch = {
+      symbol: form['Symbol'] || undefined,
+      name: form['Name'] || undefined,
+      wkn: (form['WKN']!==undefined || form['WKN (optional)']!==undefined) ? getWKN(form) : undefined,
+      recPrice: toNum(form['Empfehlungspreis']),
+      recDate: form['Empfehlungsdatum'] || undefined,
+      horizon: form['Zielhorizont'] || undefined,
+      reason: (form['Begründung (optional)'] ?? form['Begründung']) ? stripCodeFences(form['Begründung (optional)'] ?? form['Begründung']) : undefined,
+      status: (form['Status'] ? ((form['Status'].toLowerCase()==='sold')?'sold':'open') : undefined),
+      managerConfirmed: (form['Manager bestätigt Verkauf'] ? /^(true|ja|yes)$/i.test(form['Manager bestätigt Verkauf']) : undefined),
+      soldPrice: toNum(form['Verkaufspreis']),
+      soldDate: form['Verkaufsdatum'] || undefined,
+      plan: (form['Typ'] ? planFrom(form['Typ']) : undefined)
+    };
+    Object.assign(r, pick(patch, Object.keys(patch)));
+    if(!r.currency) r.currency = detectCurrency(r.symbol);
+    r.updatedAt = Date.now();
+    r.history = r.history || [];
+    const after = snapshot(r);
+    r.history.push({ t: Date.now(), type:'update', before, after });
+    const changes = diff(before, r).map(d=>`- ${d.field}: ${JSON.stringify(d.from)} → ${JSON.stringify(d.to)}`).join('\n');
+    save(db, `📝 Geändert: **${r.symbol}** (ID ${r.id})\n\nÄnderungen:\n${changes || '—'}`);
+    return;
+  }
 
-  const after = snapshot(r);
-  r.history.push({ t: Date.now(), type: before?.id ? 'update' : 'create', before, after });
+  // --- 导入 ---
+  if (labels.includes('reco-import')) {
+    let arr = []; try { arr = JSON.parse(form['JSON-Array'] || form['payload'] || '[]'); } catch { arr=[]; }
+    const mode = (form['Modus'] || form['mode'] || 'merge').toLowerCase();
 
-  const isCreate = !before?.id;
-  save(db, (isCreate
-    ? `✅ Neu: **${r.symbol}** (ID ${r.id}, ${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'})`
-    : `♻️ Aktualisiert (Duplikat verhindert): **${r.symbol}** (ID ${r.id})`));
+    const normalized = arr.map(x => ({
+      id: x.id || uid(),
+      symbol: x.symbol || '',
+      name: x.name || '',
+      wkn: (x.wkn || '').toString(),
+      recPrice: Number(x.recPrice || 0),
+      recDate: x.recDate || new Date().toISOString().slice(0,10),
+      horizon: x.horizon || 'Kurzfristig',
+      reason: stripCodeFences(x.reason || ''),
+      status: (x.status === 'sold' ? 'sold' : 'open'),
+      managerConfirmed: !!x.managerConfirmed,
+      soldPrice: (x.soldPrice != null ? Number(x.soldPrice) : undefined),
+      soldDate: x.soldDate,
+      plan: (x.plan === 'paid' ? 'paid' : 'free'),
+      currency: x.currency || detectCurrency(x.symbol),
+      createdAt: x.createdAt || Date.now(),
+      updatedAt: Date.now(),
+      history: []
+    }));
+
+    if (mode === 'replace') {
+      save(normalized, `♻️ Ersetzt: ${normalized.length} Einträge`);
+      return;
+    } else {
+      const map = new Map(db.map(x=>[x.id,x]));
+      for (const n of normalized) {
+        if (map.has(n.id)) map.set(n.id, { ...map.get(n.id), ...n, updatedAt: Date.now() });
+        else map.set(n.id, n);
+      }
+      const merged = Array.from(map.values());
+      save(merged, `➕ Importiert/zusammengeführt: ${normalized.length} Einträge, Gesamt ${merged.length}`);
+      return;
+    }
+  }
+
+  // 没有 reco-* 标签：忽略
+  fs.writeFileSync(resultFile, 'ℹ️ Kein reco-* Label, ignoriert.\n', 'utf8');
 }
-else if (labels.includes('reco-edit')) {
-  const id = form['Datensatz-ID'] || form['ID'] || '';
-  const r = db.find(x=>x.id===id);
-  if(!r){ save(db, `❌ Nicht gefunden: ID ${id}`); process.exit(0); }
 
-  const before = snapshot(r);
-  const patch = {
-    symbol: form['Symbol'] || undefined,
-    name: form['Name'] || undefined,
-    wkn: (form['WKN']!==undefined || form['WKN (optional)']!==undefined) ? getWKN(form) : undefined,
-    recPrice: t
+await main();
