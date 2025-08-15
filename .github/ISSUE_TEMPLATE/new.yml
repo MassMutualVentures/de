@@ -24,9 +24,6 @@ body:
       options:
         - Kostenlos
         - Kostenpflichtig
-      default: Kostenlos            # ← 用选项文本，且放在 attributes 里
-    validations:
-      required: true
 
   - type: input
     id: recPrice
@@ -49,9 +46,6 @@ body:
       options:
         - Kurzfristig
         - Langfristig
-      default: Kurzfristig
-    validations:
-      required: true
 
   - type: dropdown
     id: status
@@ -60,7 +54,6 @@ body:
       options:
         - open
         - sold
-      default: open
 
   - type: dropdown
     id: manager
@@ -69,7 +62,6 @@ body:
       options:
         - Nein
         - Ja
-      default: Nein
 
   - type: input
     id: soldPrice
