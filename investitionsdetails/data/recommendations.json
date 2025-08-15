@@ -1,5 +1,48 @@
 [
   {
+    "id": "id_jrs5nlhh",
+    "symbol": "CYR.DE",
+    "name": "cyan AG",
+    "wkn": "A2E4SV",
+    "recPrice": 2.45,
+    "recDate": "2025-08-15",
+    "horizon": "Kurzfristig",
+    "reason": "```text\n1. Die Nachfrage im Markt für Informationssicherheit wächst weiter, insbesondere im Bereich mobiler Sicherheit und virtueller Betreiber. Die spezialisierte Positionierung des Unternehmens entspricht den Markttrends.\n2. Die geringe Marktkapitalisierung erhöht das Aufwärtspotenzial. Bei steigender Nachfrage nach sicheren Modellen wird ein exponentieller Anstieg des Aktienkurses erwartet.\n3. Mit maßgeschneiderten Sicherheitslösungen, die speziell für B2B-, Regierungs- und Unternehmenskunden entwickelt wurden, verfügt das Unternehmen über einen äußerst loyalen Kundenstamm und eine hohe Vertragstreue. Cybersicherheitsvorfälle oder politisch bedingte Anstiege dürften die Kaufaktivität ankurbeln.\n```",
+    "status": "sold",
+    "managerConfirmed": false,
+    "soldPrice": 2.66,
+    "soldDate": "2025-08-15",
+    "plan": "free",
+    "currency": "EUR",
+    "createdAt": 1755260441153,
+    "updatedAt": 1755260441153,
+    "history": [
+      {
+        "t": 1755260441153,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_jrs5nlhh",
+          "symbol": "CYR.DE",
+          "name": "cyan AG",
+          "wkn": "A2E4SV",
+          "recPrice": 2.45,
+          "recDate": "2025-08-15",
+          "horizon": "Kurzfristig",
+          "reason": "```text\n1. Die Nachfrage im Markt für Informationssicherheit wächst weiter, insbesondere im Bereich mobiler Sicherheit und virtueller Betreiber. Die spezialisierte Positionierung des Unternehmens entspricht den Markttrends.\n2. Die geringe Marktkapitalisierung erhöht das Aufwärtspotenzial. Bei steigender Nachfrage nach sicheren Modellen wird ein exponentieller Anstieg des Aktienkurses erwartet.\n3. Mit maßgeschneiderten Sicherheitslösungen, die speziell für B2B-, Regierungs- und Unternehmenskunden entwickelt wurden, verfügt das Unternehmen über einen äußerst loyalen Kundenstamm und eine hohe Vertragstreue. Cybersicherheitsvorfälle oder politisch bedingte Anstiege dürften die Kaufaktivität ankurbeln.\n```",
+          "status": "sold",
+          "managerConfirmed": false,
+          "soldPrice": 2.66,
+          "soldDate": "2025-08-15",
+          "plan": "free",
+          "currency": "EUR",
+          "createdAt": 1755260441153,
+          "updatedAt": 1755260441153
+        }
+      }
+    ]
+  },
+  {
     "id": "sap",
     "symbol": "SAP.DE",
     "name": "SAP",
