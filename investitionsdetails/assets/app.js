@@ -110,7 +110,7 @@ function plAmt(rec){
 
 // ---- state ----
 let raw=[], view=[];
-let state = { q:'', plan:'all', status:'all', horizon:'all', sort:'recDate_desc', page:1, pageSize:10, priceSource:'yahoo' };
+let state = { q:'', plan:'all', status:'all', horizon:'all',sort:'recDate_desc', page:1, pageSize:10, priceSource:'snapshot' };
 
 function normalize(r){
   return {
@@ -344,6 +344,7 @@ function bind(){
   document.getElementById('fHorizon').onchange = e=>{ state.horizon=e.target.value; state.page=1; render(); };
   document.getElementById('sortBy').onchange = e=>{ state.sort=e.target.value; render(); };
   document.getElementById('sortBy').value = state.sort;
+  document.getElementById('priceSource').value = state.priceSource; 
   document.getElementById('pageSize').onchange = e=>{ state.pageSize=Number(e.target.value); state.page=1; render(); };
   document.getElementById('priceSource').onchange = e=>{ state.priceSource=e.target.value; refreshPrices().then(render); };
   document.getElementById('btnRefresh').onclick = ()=>{ refreshPrices().then(render); };
