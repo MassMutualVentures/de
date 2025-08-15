@@ -301,37 +301,23 @@ for (const r of items) {
 async function refreshPrices(){
   applyFilters();
   const { items } = paginate(view);
-  const syms = Array.from(new Set(items.map(r => (r.symbol||'').toUpperCase()).filter(Boolean)));
-  if (!syms.length) return;
 
-  let map = {}, used = 'none';
-
-  if (state.priceSource === 'snapshot') {
-    map = await fetchSnapshotMap(); used = Object.keys(map).length ? 'snapshot':'none';
-  } else if (state.priceSource === 'finnhub') {
-    try { map = await fetchFinnhubBatch(syms); if(Object.keys(map).length) used='finnhub'; } catch(e){ used='none'; }
-    if (used==='none') { try { map = await fetchYahooBatch(syms,false); if(Object.keys(map).length) used='yahoo'; } catch{} }
-    if (used==='none') { try { map = await fetchYahooBatch(syms,true ); if(Object.keys(map).length) used='yahoo-proxy'; } catch{} }
-    if (used==='none') { try { map = await fetchStooqBatch(syms);      if(Object.keys(map).length) used='stooq'; } catch{} }
-  } else if (state.priceSource === 'stooq') {
-    try { map = await fetchStooqBatch(syms);      if(Object.keys(map).length) used='stooq'; } catch{}
-    if (used==='none') { try { map = await fetchYahooBatch(syms,false); if(Object.keys(map).length) used='yahoo'; } catch{} }
-    if (used==='none') { try { map = await fetchYahooBatch(syms,true ); if(Object.keys(map).length) used='yahoo-proxy'; } catch{} }
-  } else { // 默认 Yahoo
-    try { map = await fetchYahooBatch(syms,false); if(Object.keys(map).length) used='yahoo'; } catch{}
-    if (used==='none') { try { map = await fetchYahooBatch(syms,true ); if(Object.keys(map).length) used='yahoo-proxy'; } catch{} }
-    if (used==='none') { try { map = await fetchFinnhubBatch(syms);     if(Object.keys(map).length) used='finnhub'; } catch{} }
-    if (used==='none') { try { map = await fetchStooqBatch(syms);       if(Object.keys(map).length) used='stooq'; } catch{} }
-  }
+  // 只读快照
+  let map = {};
+  try{
+    const url = new URL('./data/prices.json?v='+Date.now(), location.href).href;
+    const res = await fetch(url, { cache:'no-store' });
+    if (res.ok) map = await res.json();
+  }catch{}
 
   for (const r of items){
     const q = map[(r.symbol||'').toUpperCase()];
-    if (q && Number.isFinite(q.price) && q.price > 0) {
+    if (q && Number.isFinite(q.price) && q.price > 0){
       r._livePrice = q.price;
       r._liveTime  = q.time || Date.now();
-    } else {
+    }else{
       r._livePrice = 0;
-      r._liveTime  = 0; // 没拿到价就不显示时间
+      r._liveTime  = 0;
     }
   }
   render();
@@ -339,15 +325,18 @@ async function refreshPrices(){
 
 function bind(){
   document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter'){ state.q=e.target.value; state.page=1; render(); }});
-  document.getElementById('fPlan').onchange = e=>{ state.plan=e.target.value; state.page=1; render(); };
-  document.getElementById('fStatus').onchange = e=>{ state.status=e.target.value; state.page=1; render(); };
+  document.getElementById('fPlan').onchange    = e=>{ state.plan=e.target.value;    state.page=1; render(); };
+  document.getElementById('fStatus').onchange  = e=>{ state.status=e.target.value;  state.page=1; render(); };
   document.getElementById('fHorizon').onchange = e=>{ state.horizon=e.target.value; state.page=1; render(); };
-  document.getElementById('sortBy').onchange = e=>{ state.sort=e.target.value; render(); };
+  document.getElementById('sortBy').onchange   = e=>{ state.sort=e.target.value; render(); };
   document.getElementById('sortBy').value = state.sort;
-  document.getElementById('priceSource').value = state.priceSource; 
+
+  // 不再有 priceSource 下拉：
+  const ps = document.getElementById('priceSource');
+  if (ps) ps.value = state.priceSource;  // 如果你只是隐藏了它
+
   document.getElementById('pageSize').onchange = e=>{ state.pageSize=Number(e.target.value); state.page=1; render(); };
-  document.getElementById('priceSource').onchange = e=>{ state.priceSource=e.target.value; refreshPrices().then(render); };
   document.getElementById('btnRefresh').onclick = ()=>{ refreshPrices().then(render); };
-  setInterval(()=>{ refreshPrices().then(render); }, 60000);
+  setInterval(()=>{ refreshPrices().then(render); }, 60000); // 每60秒从 prices.json 读取
 }
 document.addEventListener('DOMContentLoaded', ()=>{ bind(); load(); });
