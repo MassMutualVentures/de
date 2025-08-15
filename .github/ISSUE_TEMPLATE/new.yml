@@ -86,4 +86,3 @@ body:
     id: reason
     attributes:
       label: Begründung (kundenseitig sichtbar)
-      render: text
