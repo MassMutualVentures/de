@@ -110,7 +110,7 @@ function plAmt(rec){
 
 // ---- state ----
 let raw=[], view=[];
-let state = { q:'', plan:'all', status:'all', horizon:'all', sort:'updatedAt_desc', page:1, pageSize:10, priceSource:'yahoo' };
+let state = { q:'', plan:'all', status:'all', horizon:'all', sort:'recDate_desc', page:1, pageSize:10, priceSource:'yahoo' };
 
 function normalize(r){
   return {
