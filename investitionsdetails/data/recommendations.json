@@ -1,5 +1,46 @@
 [
   {
+    "id": "id_9x5k0r22",
+    "symbol": "BMW.DE",
+    "name": "BMW",
+    "wkn": "_Noresponse_",
+    "recPrice": 88,
+    "recDate": "2025-08-14",
+    "horizon": "Langfristig",
+    "reason": "```text\nTEST\n```",
+    "status": "open",
+    "managerConfirmed": false,
+    "soldDate": "_No response_",
+    "plan": "free",
+    "currency": "EUR",
+    "createdAt": 1755257614734,
+    "updatedAt": 1755257614734,
+    "history": [
+      {
+        "t": 1755257614734,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_9x5k0r22",
+          "symbol": "BMW.DE",
+          "name": "BMW",
+          "wkn": "_Noresponse_",
+          "recPrice": 88,
+          "recDate": "2025-08-14",
+          "horizon": "Langfristig",
+          "reason": "```text\nTEST\n```",
+          "status": "open",
+          "managerConfirmed": false,
+          "soldDate": "_No response_",
+          "plan": "free",
+          "currency": "EUR",
+          "createdAt": 1755257614734,
+          "updatedAt": 1755257614734
+        }
+      }
+    ]
+  },
+  {
     "id": "id_5y6mz0pj",
     "symbol": "BMW.DE",
     "name": "BMW",
