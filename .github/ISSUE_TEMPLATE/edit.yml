@@ -90,4 +90,3 @@ body:
     id: reason
     attributes:
       label: Begründung (optional)
-      render: text
