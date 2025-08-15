@@ -24,7 +24,6 @@ body:
       options:
         - Kostenlos
         - Kostenpflichtig
-    default: 0   # ← 第1个选项（Kostenlos）
 
   - type: input
     id: recPrice
@@ -47,7 +46,6 @@ body:
       options:
         - Kurzfristig
         - Langfristig
-    default: 0   # ← Kurzfristig
 
   - type: dropdown
     id: status
@@ -56,7 +54,6 @@ body:
       options:
         - open
         - sold
-    default: 0   # ← open
 
   - type: dropdown
     id: manager
@@ -65,7 +62,6 @@ body:
       options:
         - Nein
         - Ja
-    default: 0   # ← Nein
 
   - type: input
     id: soldPrice
