@@ -1,5 +1,48 @@
 [
   {
+    "id": "id_262hjd2z",
+    "symbol": "S188.DE",
+    "name": "SMT Scharf AG",
+    "wkn": "A3DRAE",
+    "recPrice": 8,
+    "recDate": "2025-08-14",
+    "horizon": "Kurzfristig",
+    "reason": "Der Umsatz ist im Jahr 2024 weiter gestiegen, im Vergleich zum Vorjahr um 30,1 % gewachsen; der Nettogewinn legte im Jahresvergleich um +14,8 % zu. Die Fundamentaldaten sind solide.\nDas Kurs-Gewinn-Verhältnis (KGV) liegt bei etwa 6,8 (auf Basis der letzten zwölf Monate) und damit deutlich unter dem der meisten Aktien aus dem Bereich der industriellen Gerätefertigung. Das Unternehmen weist eine klare Bewertungsattraktivität auf, ist deutlich unterbewertet und verfügt über ein beträchtliches mittel- bis langfristiges Wachstumspotenzial.\nDas Unternehmen stützt sich derzeit nicht nur auf den Verkauf von Anlagen, sondern bietet den Kunden zusätzlich ein breites Spektrum an After-Sales-Wartung und Ersatzteilservice an. Dadurch wird die Stabilität der Cashflows weiter gestärkt und die Kundenbindung erhöht.",
+    "status": "sold",
+    "managerConfirmed": false,
+    "soldPrice": 8.45,
+    "soldDate": "2025-08-14",
+    "plan": "free",
+    "currency": "EUR",
+    "createdAt": 1755266683817,
+    "updatedAt": 1755266683817,
+    "history": [
+      {
+        "t": 1755266683818,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_262hjd2z",
+          "symbol": "S188.DE",
+          "name": "SMT Scharf AG",
+          "wkn": "A3DRAE",
+          "recPrice": 8,
+          "recDate": "2025-08-14",
+          "horizon": "Kurzfristig",
+          "reason": "Der Umsatz ist im Jahr 2024 weiter gestiegen, im Vergleich zum Vorjahr um 30,1 % gewachsen; der Nettogewinn legte im Jahresvergleich um +14,8 % zu. Die Fundamentaldaten sind solide.\nDas Kurs-Gewinn-Verhältnis (KGV) liegt bei etwa 6,8 (auf Basis der letzten zwölf Monate) und damit deutlich unter dem der meisten Aktien aus dem Bereich der industriellen Gerätefertigung. Das Unternehmen weist eine klare Bewertungsattraktivität auf, ist deutlich unterbewertet und verfügt über ein beträchtliches mittel- bis langfristiges Wachstumspotenzial.\nDas Unternehmen stützt sich derzeit nicht nur auf den Verkauf von Anlagen, sondern bietet den Kunden zusätzlich ein breites Spektrum an After-Sales-Wartung und Ersatzteilservice an. Dadurch wird die Stabilität der Cashflows weiter gestärkt und die Kundenbindung erhöht.",
+          "status": "sold",
+          "managerConfirmed": false,
+          "soldPrice": 8.45,
+          "soldDate": "2025-08-14",
+          "plan": "free",
+          "currency": "EUR",
+          "createdAt": 1755266683817,
+          "updatedAt": 1755266683817
+        }
+      }
+    ]
+  },
+  {
     "id": "id_2lf5e8kt",
     "symbol": "CYR.DE",
     "name": "cyan AG",
