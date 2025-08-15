@@ -10,11 +10,13 @@ body:
       placeholder: "SAP.DE"
     validations:
       required: true
+
   - type: input
     id: name
     attributes:
       label: Name
       placeholder: "SAP"
+
   - type: dropdown
     id: plan
     attributes:
@@ -22,19 +24,22 @@ body:
       options:
         - Kostenlos
         - Kostenpflichtig
-    default: 0
+      default: Kostenlos
+
   - type: input
     id: recPrice
     attributes:
       label: Empfehlungspreis
       description: "Bitte als Zahl, z.B. 185.2 oder 185,2"
       placeholder: "185.2"
+
   - type: input
     id: recDate
     attributes:
       label: Empfehlungsdatum
       description: "Format: YYYY-MM-DD"
       placeholder: "2025-08-15"
+
   - type: dropdown
     id: horizon
     attributes:
@@ -42,7 +47,8 @@ body:
       options:
         - Kurzfristig
         - Langfristig
-    default: 0
+      default: Kurzfristig
+
   - type: dropdown
     id: status
     attributes:
@@ -50,7 +56,8 @@ body:
       options:
         - open
         - sold
-    default: 0
+      default: open
+
   - type: dropdown
     id: manager
     attributes:
@@ -58,18 +65,21 @@ body:
       options:
         - Nein
         - Ja
-    default: 0
+      default: Nein
+
   - type: input
     id: soldPrice
     attributes:
       label: Verkaufspreis (optional)
       placeholder: "51.80"
+
   - type: input
     id: soldDate
     attributes:
       label: Verkaufsdatum (optional)
       description: "Format: YYYY-MM-DD"
       placeholder: "2025-08-14"
+
   - type: textarea
     id: reason
     attributes:
