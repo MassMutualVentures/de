@@ -1,0 +1,69 @@
+:root{
+  --bg:#0e1117; --surface:#141922; --muted:#9aa3b6; --text:#e7ebf3; --border:#212734; --accent:#6ea8fe; --green:#22c55e; --red:#ef4444; --yellow:#facc15;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Inter","Noto Sans",sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+.topbar{position:sticky;top:0;background:rgba(14,17,23,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:10}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar h1{font-size:20px;margin:0;font-weight:900;letter-spacing:.2px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.select{display:inline-flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);padding:8px 10px;border-radius:12px;color:var(--muted)}
+.select select{background:transparent;color:var(--text);border:none;outline:none}
+.btn{background:linear-gradient(180deg,#1b57ff,#0e3ec7);color:#fff;border:1px solid #1449f1;padding:9px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0}
+.filters input,.filters select{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:9px 12px}
+.tag{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted)}
+.table-card{margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.grid{width:100%;border-collapse:collapse;table-layout:auto}
+th,td{padding:12px;border-top:1px solid var(--border);vertical-align:top}
+thead th{background:#0f1320;color:#c7d0e6;font-weight:800;font-size:13px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+.muted{color:var(--muted)}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-weight:800;font-size:11px;border:1px solid var(--border);margin-left:6px}
+.badge.free{background:rgba(34,197,94,.12);color:#bbf7d0;border-color:#065f46}
+.badge.paid{background:rgba(239,68,68,.12);color:#fecaca;border-color:#7f1d1d}
+.pill{padding:3px 7px;border-radius:999px;font-weight:700;font-size:11px;border:1px solid var(--border)}
+.pill.short{background:rgba(250,204,21,.12);color:var(--yellow)}
+.pill.long{background:rgba(110,168,254,.12);color:#bcd2ff}
+.status{padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;display:inline-block}
+.status.open{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.status.sold{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.pl-pos{color:var(--green);font-weight:900}
+.pl-neg{color:var(--red);font-weight:900}
+.hint{color:var(--muted);font-size:12px;margin:14px 0 26px}
+td{word-break:break-word}
+
+/* Mobile cards */
+.mobile-only{display:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;margin:12px 0;box-shadow:0 6px 18px rgba(0,0,0,.16)}
+.card .head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.card .symbol{font-weight:900;letter-spacing:.3px}
+.card .name{color:var(--muted);font-size:14px}
+.card .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.kv{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:8px 10px}
+.kv .k{color:var(--muted);font-size:12px}
+.kv .v{font-weight:800;margin-top:2px}
+.card .reason{color:#cfd6e9;margin-top:8px}
+.more{color:#9ec3ff;cursor:pointer;text-decoration:underline;margin-left:6px;user-select:none}
+
+/* Responsive */
+@media (max-width: 900px){
+  .desktop-only{display:none}
+  .mobile-only{display:block}
+  .wrap{padding:12px}
+  .topbar h1{font-size:18px}
+  .card .meta{grid-template-columns:1fr}
+}
+
+/* Hotfix: better wrapping & reason clamp (desktop) */
+.grid td{word-break: normal; overflow-wrap: break-word; white-space: normal;}
+.reason-cell .reason-text{
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.reason-cell .more{ margin-left: 6px; color:#9ec3ff; cursor:pointer; text-decoration:underline; user-select:none; }

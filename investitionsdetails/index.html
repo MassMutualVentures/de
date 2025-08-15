@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Investitionsdetails – Leistungsübersicht</title>
+  <meta name="description" content="Leistungsübersicht unserer Aktien-Empfehlungen für Kunden: Kurs, Gewinn/Verlust, Status (verkauft/laufend) und Begründung. Desktop & Mobil optimiert." />
+  <meta name="theme-color" content="#0e1117" />
+  <link rel="stylesheet" href="./assets/app.css" />
+  <!-- Inline-Beispiele (nur Anzeige-Fallback) -->
+  <script id="SAMPLE" type="application/json">[
+    {"id":"sap","symbol":"SAP.DE","name":"SAP","recPrice":185.2,"recDate":"2025-08-12","horizon":"Langfristig","reason":"Cloud- & SaaS-Wachstum, Margenverbesserung.","status":"open","managerConfirmed":false,"plan":"paid","currency":"EUR"},
+    {"id":"rhm","symbol":"RHM.DE","name":"Rheinmetall","recPrice":550.0,"recDate":"2025-08-10","horizon":"Kurzfristig","reason":"Auftragsbestand & Kapazitätsausbau, technisches Momentum.","status":"open","managerConfirmed":false,"plan":"paid","currency":"EUR"},
+    {"id":"sie","symbol":"SIE.DE","name":"Siemens","recPrice":178.4,"recDate":"2025-08-05","horizon":"Langfristig","reason":"Automatisierung & Digital Industries, hoher Auftragseingang.","status":"open","managerConfirmed":false,"plan":"free","currency":"EUR"},
+    {"id":"basf","symbol":"BAS.DE","name":"BASF","recPrice":47.3,"recDate":"2025-07-25","horizon":"Kurzfristig","reason":"Zyklische Erholung + Kostenhebel.","status":"sold","managerConfirmed":true,"soldPrice":51.8,"soldDate":"2025-08-14","plan":"free","currency":"EUR"},
+    {"id":"alv","symbol":"ALV.DE","name":"Allianz","recPrice":265.0,"recDate":"2025-08-01","horizon":"Langfristig","reason":"Stetige Dividende, Kombination Versicherung & Asset Management.","status":"open","managerConfirmed":false,"plan":"paid","currency":"EUR"},
+    {"id":"mbg","symbol":"MBG.DE","name":"Mercedes-Benz Group","recPrice":63.5,"recDate":"2025-08-08","horizon":"Kurzfristig","reason":"Premium-Mix & Aktienrückkäufe.","status":"open","managerConfirmed":false,"plan":"free","currency":"EUR"}
+  ]</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap row">
+      <h1>Investitionsdetails</h1>
+      <div class="controls">
+        <label class="select">
+          <span>Preisquelle</span>
+          <select id="priceSource">
+            <option value="yahoo">Yahoo</option>
+            <option value="stooq">Stooq</option>
+          </select>
+        </label>
+        <button class="btn" id="btnRefresh" title="Kurse aktualisieren">Aktualisieren</button>
+      </div>
+    </div>
+    <div class="wrap filters">
+      <input id="q" type="search" inputmode="search" placeholder="Suche: Symbol / Name / Begründung (Enter)" aria-label="Suche">
+      <select id="fPlan" aria-label="Typ filtern">
+        <option value="all">Typ: Alle</option>
+        <option value="free">Kostenlos</option>
+        <option value="paid">Kostenpflichtig</option>
+      </select>
+      <select id="fStatus" aria-label="Status filtern">
+        <option value="all">Status: Alle</option>
+        <option value="open">Laufend</option>
+        <option value="sold">Verkauft</option>
+      </select>
+      <select id="fHorizon" aria-label="Horizon filtern">
+        <option value="all">Ziel: Alle</option>
+        <option value="Kurzfristig">Kurzfristig</option>
+        <option value="Langfristig">Langfristig</option>
+      </select>
+      <select id="sortBy" aria-label="Sortierung">
+        <option value="updatedAt_desc">Neueste Änderung</option>
+        <option value="pl_desc">Gewinn/Verlust %</option>
+        <option value="recDate_desc">Empfehlungsdatum</option>
+        <option value="symbol_asc">Symbol A–Z</option>
+      </select>
+      <select id="pageSize" aria-label="Einträge pro Seite">
+        <option value="10">10 / Seite</option>
+        <option value="20">20 / Seite</option>
+        <option value="50">50 / Seite</option>
+      </select>
+      <span class="tag" id="countTag">0 Einträge</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="desktop-only table-card" aria-label="Tabelle">
+      <table class="grid">
+        <colgroup>
+          <col style="width: 18rem;" />
+          <col style="width: 16rem;" />
+          <col style="width: 12rem;" />
+          <col style="width: 12rem;" />
+          <col style="width: 12rem;" />
+          <col />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Symbol · Name · Typ</th>
+            <th>Empfehlung</th>
+            <th>Aktuell</th>
+            <th>Gewinn/Verlust</th>
+            <th>Status</th>
+            <th>Begründung</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+
+    <section id="cards" class="mobile-only" aria-label="Karten"></section>
+
+    <nav id="pager" class="pager" aria-label="Seiten"></nav>
+
+    <p class="hint">Kurse sind ggf. verzögert. Ohne Kursquelle zeigen wir <b>0</b>. EUR für deutsche Ticker (*.DE), sonst USD. Keine Anlageberatung.</p>
+  </main>
+
+  <script src="./assets/app.js"></script>
+</body>
+</html>
