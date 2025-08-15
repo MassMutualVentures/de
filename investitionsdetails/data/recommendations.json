@@ -1,5 +1,46 @@
 [
   {
+    "id": "id_5y6mz0pj",
+    "symbol": "BMW.DE",
+    "name": "BMW",
+    "wkn": "_Noresponse_",
+    "recPrice": 88,
+    "recDate": "2025-08-14",
+    "horizon": "Langfristig",
+    "reason": "```text\nTEST\n```",
+    "status": "open",
+    "managerConfirmed": false,
+    "soldDate": "_No response_",
+    "plan": "free",
+    "currency": "EUR",
+    "createdAt": 1755257353277,
+    "updatedAt": 1755257353277,
+    "history": [
+      {
+        "t": 1755257353277,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_5y6mz0pj",
+          "symbol": "BMW.DE",
+          "name": "BMW",
+          "wkn": "_Noresponse_",
+          "recPrice": 88,
+          "recDate": "2025-08-14",
+          "horizon": "Langfristig",
+          "reason": "```text\nTEST\n```",
+          "status": "open",
+          "managerConfirmed": false,
+          "soldDate": "_No response_",
+          "plan": "free",
+          "currency": "EUR",
+          "createdAt": 1755257353277,
+          "updatedAt": 1755257353277
+        }
+      }
+    ]
+  },
+  {
     "id": "sap",
     "symbol": "SAP.DE",
     "name": "SAP",
@@ -18,7 +59,7 @@
     "symbol": "RHM.DE",
     "name": "Rheinmetall",
     "wkn": "703000",
-    "recPrice": 550.0,
+    "recPrice": 550,
     "recDate": "2025-08-10",
     "horizon": "Kurzfristig",
     "reason": "Auftragsbestand & Kapazitätsausbau, technisches Momentum.",
@@ -62,7 +103,7 @@
     "symbol": "ALV.DE",
     "name": "Allianz",
     "wkn": "840400",
-    "recPrice": 265.0,
+    "recPrice": 265,
     "recDate": "2025-08-01",
     "horizon": "Langfristig",
     "reason": "Stetige Dividende, Kombination Versicherung & Asset Management.",
