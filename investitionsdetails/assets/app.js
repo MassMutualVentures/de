@@ -320,6 +320,29 @@ async function refreshPrices(){
   }
   render();
 }
+.reason-cell .reason-text,
+.card .reason .reason-text{
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient: vertical;
+  overflow:hidden;
+  white-space:pre-line;
+}
+.reason-cell.expanded .reason-text,
+.card .reason.expanded .reason-text{
+  -webkit-line-clamp:unset;
+  display:block;
+  white-space:pre-wrap;
+}
+.reason-toggle{
+  margin-left:.5rem;
+  font-size:12px;
+  color:var(--muted);
+  text-decoration:underline;
+  background:none;
+  border:0;
+  cursor:pointer;
+}
 
 function bind(){
   document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter'){ state.q=e.target.value; state.page=1; render(); }});
