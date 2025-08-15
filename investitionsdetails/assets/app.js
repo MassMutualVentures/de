@@ -67,6 +67,7 @@ let state = { q:'', plan:'all', status:'all', horizon:'all', sort:'updatedAt_des
 function normalize(r){
   return {
     id: r.id, symbol: r.symbol||'', name: r.name||'',
+    wkn: (r.wkn || '').toString().trim(), 
     recPrice: Number(r.recPrice||0),
     recDate: r.recDate || todayStr(),
     horizon: r.horizon || 'Kurzfristig',
@@ -99,7 +100,7 @@ async function load(){
 function applyFilters(){
   let arr = raw.slice();
   const q = state.q.trim().toLowerCase();
-  if(q) arr = arr.filter(r=> (r.symbol||'').toLowerCase().includes(q) || (r.name||'').toLowerCase().includes(q) || (r.reason||'').toLowerCase().includes(q));
+  if(q) arr = arr.filter(r=>{const s=(r.symbol||'').toLowerCase();const n=(r.name||'').toLowerCase();const rs=(r.reason||'').toLowerCase();const w=(r.wkn||'').toLowerCase();return s.includes(q) || n.includes(q) || rs.includes(q) || w.includes(q);});
   if(state.plan!=='all') arr = arr.filter(r=> r.plan===state.plan);
   if(state.status!=='all') arr = arr.filter(r=> r.status===state.status);
   if(state.horizon!=='all') arr = arr.filter(r=> r.horizon===state.horizon);
