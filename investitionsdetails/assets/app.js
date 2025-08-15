@@ -7,6 +7,7 @@ const esc = s => (s??'').toString().replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&l
 const todayStr = ()=> new Date().toISOString().slice(0,10);
 function curFor(symbol){ return /\.de$/i.test(symbol||'') ? 'EUR' : 'USD'; }
 function money(v, cur){ return (cur==='EUR'? fmtEUR:fmtUSD).format(v||0); }
+function getFinnhubKey(){ return (window.FINNHUB_KEY && String(window.FINNHUB_KEY).trim()) || localStorage.getItem('FINNHUB_KEY') || ''; }
 
 // === Robust price fetchers ===
 
@@ -37,6 +38,26 @@ async function fetchYahooBatch(symbols, useProxy = false) {
   return out;
 }
 
+// Finnhub（逐个请求，当前页一般≤10只，速率OK）
+async function fetchFinnhubBatch(symbols){
+  const key = getFinnhubKey();
+  if(!key) throw new Error('NO_FINNHUB_KEY');
+  const out = {};
+  await Promise.all(symbols.map(async sym=>{
+    try{
+      const url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(sym)}&token=${key}`;
+      const res = await fetch(url, {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const j = await res.json();
+      const price = Number(j.c || 0);                 // c = current price
+      if(Number.isFinite(price) && price > 0){
+        out[sym.toUpperCase()] = { price, currency:null, time:(j.t? j.t*1000 : Date.now()) }; // t = unix time
+      }
+    }catch(e){}
+  }));
+  return out;
+}
+
 // Stooq CSV 兜底（逐个取，稳定但慢）
 async function fetchStooqBatch(symbols) {
   const out = {};
@@ -58,26 +79,15 @@ async function fetchStooqBatch(symbols) {
   return out;
 }
 
-// 总调度：先直连 Yahoo → 再代理 → 再 Stooq
-async function fetchPricesSmart(symbols) {
-  // Yahoo 直连
-  try { 
-    const m = await fetchYahooBatch(symbols, false);
-    if (Object.keys(m).length) return { map: m, source: 'yahoo' };
-  } catch {}
-  // Yahoo 经代理
-  try { 
-    const m = await fetchYahooBatch(symbols, true);
-    if (Object.keys(m).length) return { map: m, source: 'yahoo-proxy' };
-  } catch {}
-  // Stooq 兜底
-  try { 
-    const m = await fetchStooqBatch(symbols);
-    if (Object.keys(m).length) return { map: m, source: 'stooq' };
-  } catch {}
-  return { map: {}, source: 'none' };
+// 读取 GitHub Actions 生成的快照
+async function fetchSnapshotMap(){
+  try{
+    const url = new URL('./data/prices.json?v='+Date.now(), location.href).href;
+    const res = await fetch(url,{cache:'no-store'});
+    if(!res.ok) return {};
+    return await res.json();
+  }catch{ return {}; }
 }
-
 
 function plPct(rec){
   const base = rec.recPrice;
@@ -98,7 +108,6 @@ function plAmt(rec){
   return 0;
 }
 
-
 // ---- state ----
 let raw=[], view=[];
 let state = { q:'', plan:'all', status:'all', horizon:'all', sort:'updatedAt_desc', page:1, pageSize:10, priceSource:'yahoo' };
@@ -106,7 +115,7 @@ let state = { q:'', plan:'all', status:'all', horizon:'all', sort:'updatedAt_des
 function normalize(r){
   return {
     id: r.id, symbol: r.symbol||'', name: r.name||'',
-    wkn: (r.wkn || '').toString().trim(), 
+    wkn: (r.wkn || '').toString().trim(),
     recPrice: Number(r.recPrice||0),
     recDate: r.recDate || todayStr(),
     horizon: r.horizon || 'Kurzfristig',
@@ -139,7 +148,13 @@ async function load(){
 function applyFilters(){
   let arr = raw.slice();
   const q = state.q.trim().toLowerCase();
-  if(q) arr = arr.filter(r=>{const s=(r.symbol||'').toLowerCase();const n=(r.name||'').toLowerCase();const rs=(r.reason||'').toLowerCase();const w=(r.wkn||'').toLowerCase();return s.includes(q) || n.includes(q) || rs.includes(q) || w.includes(q);});
+  if(q) arr = arr.filter(r=>{
+    const s=(r.symbol||'').toLowerCase();
+    const n=(r.name||'').toLowerCase();
+    const rs=(r.reason||'').toLowerCase();
+    const w=(r.wkn||'').toLowerCase();
+    return s.includes(q) || n.includes(q) || rs.includes(q) || w.includes(q);
+  });
   if(state.plan!=='all') arr = arr.filter(r=> r.plan===state.plan);
   if(state.status!=='all') arr = arr.filter(r=> r.status===state.status);
   if(state.horizon!=='all') arr = arr.filter(r=> r.horizon===state.horizon);
@@ -170,45 +185,44 @@ function render(){
   for(const r of items){
     const pct = plPct(r), amt = plAmt(r), cur = r.currency;
     const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>
-      <div class="mono">${esc(r.symbol)}</div>
-      <div class="muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
-      <div><span class="muted">${esc(r.name||'—')}</span><span class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</span></div>
-    </td>
-    <td>
-      <div>${money(r.recPrice, cur)}</div>
-      <div class="muted">${esc(r.recDate)} · <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div>
-    </td>
-    <td>
-      <div class="mono">${money(r._livePrice||0, cur)}</div>
-      <div class="muted">${r._liveTime? new Date(r._liveTime).toLocaleTimeString('de-DE') : ''}</div>
-    </td>
-    <td>
-      <div class="mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)}</div>
-      <div class="muted">${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div>
-    </td>
-    <td>
-      <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
-      ${r.status==='sold'
-        ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
-        : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
-      }
-    </td>
-    <td class="reason-cell">
-      <span class="reason-text">${esc(r.reason||'—')}</span>
-      ${ (r.reason||'').length>200 ? '<span class="more">Mehr</span>' : ''}
-    </td>`;
+    tr.innerHTML = `
+      <td>
+        <div class="mono">${esc(r.symbol)}</div>
+        <div class="muted">WKN: <span class="mono">${esc(r.wkn||'—')}</span></div>
+        <div><span class="muted">${esc(r.name||'—')}</span><span class="badge ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'Kostenpflichtig':'Kostenlos'}</span></div>
+      </td>
+      <td>
+        <div>${money(r.recPrice, cur)}</div>
+        <div class="muted">${esc(r.recDate)} · <span class="pill ${/Kurz/.test(r.horizon)?'short':'long'}">${esc(r.horizon)}</span></div>
+      </td>
+      <td>
+        <div class="mono">${money(r._livePrice||0, cur)}</div>
+        <div class="muted">${r._liveTime? new Date(r._liveTime).toLocaleTimeString('de-DE') : ''}</div>
+      </td>
+      <td>
+        <div class="mono ${(pct>=0)?'pl-pos':'pl-neg'}">${money(amt, cur)}</div>
+        <div class="muted">${Number.isFinite(pct)? fmtPct.format(pct) : '—'}</div>
+      </td>
+      <td>
+        <span class="status ${r.status==='sold'?'sold':'open'}">${r.status==='sold'?'Verkauft':'Laufend'}</span>
+        ${r.status==='sold'
+          ? `<div class="muted">VK: ${money(r.soldPrice||0, cur)} · ${esc(r.soldDate||'—')}</div>`
+          : `<div class="muted">Manager bestätigt: ${r.managerConfirmed? '✅ Ja':'— Nein'}</div>`
+        }
+      </td>
+      <td class="reason-cell">
+        <span class="reason-text">${esc(r.reason||'—')}</span>
+        ${ (r.reason||'').length>200 ? '<span class="more">Mehr</span>' : ''}
+      </td>`;
     tbody.appendChild(tr);
-      // Toggle 'Mehr' on desktop rows
-      const more = tr.querySelector('.reason-cell .more');
-      if(more){
-        more.addEventListener('click', ()=>{
-          const span = tr.querySelector('.reason-cell .reason-text');
-          span.style.display = 'inline'; span.style.webkitLineClamp = 'unset'; span.style.webkitBoxOrient = 'unset'; span.style.overflow = 'visible';
-          more.remove();
-        });
-      }
+    const more = tr.querySelector('.reason-cell .more');
+    if(more){
+      more.addEventListener('click', ()=>{
+        const span = tr.querySelector('.reason-cell .reason-text');
+        span.style.display = 'inline'; span.style.webkitLineClamp = 'unset'; span.style.webkitBoxOrient = 'unset'; span.style.overflow = 'visible';
+        more.remove();
+      });
+    }
   }
 
   // mobile cards
@@ -265,34 +279,34 @@ function render(){
   addBtn('»',pages,false,page===pages);
 }
 
-// 批量抓价 + 自动兜底（Yahoo → Yahoo(代理) → Stooq）
-// 只在拿到有效价格时写入 _livePrice/_liveTime；失败则保持 0 且不写时间
+// 批量抓价：支持 Yahoo / Finnhub / Stooq / Snapshot
+// 只有拿到有效价格才写 _liveTime；失败则保持 0 且不显示时间
 async function refreshPrices(){
-  // 取「当前页」的代码（也可改成 raw 全量）
   applyFilters();
   const { items } = paginate(view);
-
-  const syms = Array.from(new Set(
-    items.map(r => (r.symbol || '').toUpperCase()).filter(Boolean)
-  ));
-
+  const syms = Array.from(new Set(items.map(r => (r.symbol||'').toUpperCase()).filter(Boolean)));
   if (!syms.length) return;
 
   let map = {}, used = 'none';
 
-  if (state.priceSource === 'stooq') {
-    // 用户手选 Stooq：先 Stooq，失败再回退 Yahoo
-    try { map = await fetchStooqBatch(syms); if (Object.keys(map).length) used='stooq'; } catch {}
-    if (used==='none') { try { map = await fetchYahooBatch(syms, false); if (Object.keys(map).length) used='yahoo'; } catch {} }
-    if (used==='none') { try { map = await fetchYahooBatch(syms, true ); if (Object.keys(map).length) used='yahoo-proxy'; } catch {} }
-  } else {
-    // 默认 / 选择 Yahoo：先直连，再代理，最后 Stooq 兜底
-    try { map = await fetchYahooBatch(syms, false); if (Object.keys(map).length) used='yahoo'; } catch {}
-    if (used==='none') { try { map = await fetchYahooBatch(syms, true ); if (Object.keys(map).length) used='yahoo-proxy'; } catch {} }
-    if (used==='none') { try { map = await fetchStooqBatch(syms);        if (Object.keys(map).length) used='stooq'; } catch {} }
+  if (state.priceSource === 'snapshot') {
+    map = await fetchSnapshotMap(); used = Object.keys(map).length ? 'snapshot':'none';
+  } else if (state.priceSource === 'finnhub') {
+    try { map = await fetchFinnhubBatch(syms); if(Object.keys(map).length) used='finnhub'; } catch(e){ used='none'; }
+    if (used==='none') { try { map = await fetchYahooBatch(syms,false); if(Object.keys(map).length) used='yahoo'; } catch{} }
+    if (used==='none') { try { map = await fetchYahooBatch(syms,true ); if(Object.keys(map).length) used='yahoo-proxy'; } catch{} }
+    if (used==='none') { try { map = await fetchStooqBatch(syms);      if(Object.keys(map).length) used='stooq'; } catch{} }
+  } else if (state.priceSource === 'stooq') {
+    try { map = await fetchStooqBatch(syms);      if(Object.keys(map).length) used='stooq'; } catch{}
+    if (used==='none') { try { map = await fetchYahooBatch(syms,false); if(Object.keys(map).length) used='yahoo'; } catch{} }
+    if (used==='none') { try { map = await fetchYahooBatch(syms,true ); if(Object.keys(map).length) used='yahoo-proxy'; } catch{} }
+  } else { // 默认 Yahoo
+    try { map = await fetchYahooBatch(syms,false); if(Object.keys(map).length) used='yahoo'; } catch{}
+    if (used==='none') { try { map = await fetchYahooBatch(syms,true ); if(Object.keys(map).length) used='yahoo-proxy'; } catch{} }
+    if (used==='none') { try { map = await fetchFinnhubBatch(syms);     if(Object.keys(map).length) used='finnhub'; } catch{} }
+    if (used==='none') { try { map = await fetchStooqBatch(syms);       if(Object.keys(map).length) used='stooq'; } catch{} }
   }
 
-  // 写入结果：只有有价时才更新时间；没价则时间留空
   for (const r of items){
     const q = map[(r.symbol||'').toUpperCase()];
     if (q && Number.isFinite(q.price) && q.price > 0) {
@@ -300,13 +314,11 @@ async function refreshPrices(){
       r._liveTime  = q.time || Date.now();
     } else {
       r._livePrice = 0;
-      r._liveTime  = 0; // 这样你在渲染里就不会显示时间
+      r._liveTime  = 0; // 没拿到价就不显示时间
     }
   }
-
-  render(); // 或 applyFilters()+render()，视你项目而定
+  render();
 }
-
 
 function bind(){
   document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter'){ state.q=e.target.value; state.page=1; render(); }});
@@ -319,6 +331,4 @@ function bind(){
   document.getElementById('btnRefresh').onclick = ()=>{ refreshPrices().then(render); };
   setInterval(()=>{ refreshPrices().then(render); }, 60000);
 }
-
-
 document.addEventListener('DOMContentLoaded', ()=>{ bind(); load(); });
