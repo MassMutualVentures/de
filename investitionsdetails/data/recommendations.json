@@ -1,5 +1,46 @@
 [
   {
+    "id": "id_crwhfwop",
+    "symbol": "S92.DE",
+    "name": "SMA Solar Technology AG",
+    "wkn": "A0DJ6J",
+    "recPrice": 22.36,
+    "recDate": "2025-08-19",
+    "horizon": "Kurzfristig",
+    "reason": "Super Rendite-Plan",
+    "status": "open",
+    "managerConfirmed": false,
+    "soldDate": "_No response_",
+    "plan": "paid",
+    "currency": "EUR",
+    "createdAt": 1755584640735,
+    "updatedAt": 1755584640735,
+    "history": [
+      {
+        "t": 1755584640735,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_crwhfwop",
+          "symbol": "S92.DE",
+          "name": "SMA Solar Technology AG",
+          "wkn": "A0DJ6J",
+          "recPrice": 22.36,
+          "recDate": "2025-08-19",
+          "horizon": "Kurzfristig",
+          "reason": "Super Rendite-Plan",
+          "status": "open",
+          "managerConfirmed": false,
+          "soldDate": "_No response_",
+          "plan": "paid",
+          "currency": "EUR",
+          "createdAt": 1755584640735,
+          "updatedAt": 1755584640735
+        }
+      }
+    ]
+  },
+  {
     "id": "id_262hjd2z",
     "symbol": "S188.DE",
     "name": "SMT Scharf AG",
