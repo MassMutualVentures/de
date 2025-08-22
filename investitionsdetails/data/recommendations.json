@@ -1,5 +1,46 @@
 [
   {
+    "id": "id_jb8sa064",
+    "symbol": "TPG.DE",
+    "name": "PLATFORM GROUP AG",
+    "wkn": "A2QEFA",
+    "recPrice": 9.08,
+    "recDate": "2025-08-22",
+    "horizon": "Kurzfristig",
+    "reason": "quantitative Analyse",
+    "status": "open",
+    "managerConfirmed": false,
+    "soldDate": "_No response_",
+    "plan": "paid",
+    "currency": "EUR",
+    "createdAt": 1755871940256,
+    "updatedAt": 1755871940256,
+    "history": [
+      {
+        "t": 1755871940256,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_jb8sa064",
+          "symbol": "TPG.DE",
+          "name": "PLATFORM GROUP AG",
+          "wkn": "A2QEFA",
+          "recPrice": 9.08,
+          "recDate": "2025-08-22",
+          "horizon": "Kurzfristig",
+          "reason": "quantitative Analyse",
+          "status": "open",
+          "managerConfirmed": false,
+          "soldDate": "_No response_",
+          "plan": "paid",
+          "currency": "EUR",
+          "createdAt": 1755871940256,
+          "updatedAt": 1755871940256
+        }
+      }
+    ]
+  },
+  {
     "id": "id_omg992sd",
     "symbol": "VRL.DE",
     "name": "NET DIGITAL AG",
