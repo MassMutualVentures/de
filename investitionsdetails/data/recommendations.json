@@ -12,7 +12,7 @@
     "managerConfirmed": true,
     "soldPrice": 23.74,
     "soldDate": "2025-08-18",
-    "plan": "test",
+    "plan": "paid",
     "currency": "EUR",
     "profitPercent": 6.17
   },
@@ -29,7 +29,7 @@
     "managerConfirmed": true,
     "soldPrice": 3.84,
     "soldDate": "2025-08-19",
-    "plan": "test",
+    "plan": "paid",
     "currency": "EUR",
     "profitPercent": 8.47
   },
