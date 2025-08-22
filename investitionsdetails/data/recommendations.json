@@ -1,5 +1,48 @@
 [
   {
+    "id": "id_8jv4n6v3",
+    "symbol": "PGN.DE",
+    "name": "PARAGON GMBH & CO KGAA",
+    "wkn": "555869",
+    "recPrice": 2.77,
+    "recDate": "2025-08-20",
+    "horizon": "Kurzfristig",
+    "reason": "quantitative Analyse",
+    "status": "sold",
+    "managerConfirmed": true,
+    "soldPrice": 2.9,
+    "soldDate": "2025-08-21",
+    "plan": "paid",
+    "currency": "EUR",
+    "createdAt": 1755871627947,
+    "updatedAt": 1755871627947,
+    "history": [
+      {
+        "t": 1755871627947,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_8jv4n6v3",
+          "symbol": "PGN.DE",
+          "name": "PARAGON GMBH & CO KGAA",
+          "wkn": "555869",
+          "recPrice": 2.77,
+          "recDate": "2025-08-20",
+          "horizon": "Kurzfristig",
+          "reason": "quantitative Analyse",
+          "status": "sold",
+          "managerConfirmed": true,
+          "soldPrice": 2.9,
+          "soldDate": "2025-08-21",
+          "plan": "paid",
+          "currency": "EUR",
+          "createdAt": 1755871627947,
+          "updatedAt": 1755871627947
+        }
+      }
+    ]
+  },
+  {
     "id": "id_0rp83ytq",
     "symbol": "FRS.DE",
     "name": "FORIS AG",
