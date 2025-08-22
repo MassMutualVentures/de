@@ -1,5 +1,48 @@
 [
   {
+    "id": "id_omg992sd",
+    "symbol": "VRL.DE",
+    "name": "NET DIGITAL AG",
+    "wkn": "A2BPK3",
+    "recPrice": 14,
+    "recDate": "2025-08-21",
+    "horizon": "Kurzfristig",
+    "reason": "quantitative Analyse",
+    "status": "sold",
+    "managerConfirmed": true,
+    "soldPrice": 15,
+    "soldDate": "2025-08-22",
+    "plan": "paid",
+    "currency": "EUR",
+    "createdAt": 1755871865576,
+    "updatedAt": 1755871865576,
+    "history": [
+      {
+        "t": 1755871865576,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_omg992sd",
+          "symbol": "VRL.DE",
+          "name": "NET DIGITAL AG",
+          "wkn": "A2BPK3",
+          "recPrice": 14,
+          "recDate": "2025-08-21",
+          "horizon": "Kurzfristig",
+          "reason": "quantitative Analyse",
+          "status": "sold",
+          "managerConfirmed": true,
+          "soldPrice": 15,
+          "soldDate": "2025-08-22",
+          "plan": "paid",
+          "currency": "EUR",
+          "createdAt": 1755871865576,
+          "updatedAt": 1755871865576
+        }
+      }
+    ]
+  },
+  {
     "id": "id_8jv4n6v3",
     "symbol": "PGN.DE",
     "name": "PARAGON GMBH & CO KGAA",
