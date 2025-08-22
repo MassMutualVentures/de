@@ -1,5 +1,48 @@
 [
   {
+    "id": "id_0rp83ytq",
+    "symbol": "FRS.DE",
+    "name": "FORIS AG",
+    "wkn": "577580",
+    "recPrice": 3.54,
+    "recDate": "2025-08-19",
+    "horizon": "Kurzfristig",
+    "reason": "quantitative Analyse",
+    "status": "sold",
+    "managerConfirmed": true,
+    "soldPrice": 3.84,
+    "soldDate": "2025-08-20",
+    "plan": "paid",
+    "currency": "EUR",
+    "createdAt": 1755871478531,
+    "updatedAt": 1755871478531,
+    "history": [
+      {
+        "t": 1755871478531,
+        "type": "create",
+        "before": null,
+        "after": {
+          "id": "id_0rp83ytq",
+          "symbol": "FRS.DE",
+          "name": "FORIS AG",
+          "wkn": "577580",
+          "recPrice": 3.54,
+          "recDate": "2025-08-19",
+          "horizon": "Kurzfristig",
+          "reason": "quantitative Analyse",
+          "status": "sold",
+          "managerConfirmed": true,
+          "soldPrice": 3.84,
+          "soldDate": "2025-08-20",
+          "plan": "paid",
+          "currency": "EUR",
+          "createdAt": 1755871478531,
+          "updatedAt": 1755871478531
+        }
+      }
+    ]
+  },
+  {
     "id": "id_fcf7v8kl",
     "symbol": "S92.DE",
     "name": "SMA Solar Technology AG",
