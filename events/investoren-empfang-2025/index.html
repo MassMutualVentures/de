@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MassMutual Ventures Deutschland · Exklusiver Investoren‑Empfang</title>
+  <meta name="description" content="MMV Deutschland – Einladung zum exklusiven Investoren‑Empfang. Nur auf Einladung · Privater Rahmen." />
+  <style>
+    :root{ --bg:#0b0f1a; --ink:#0f172a; --gold:#d4af37; --muted:#cbd5e1; --glass:rgba(15,23,42,.55); --white:#fff }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,'Noto Sans',sans-serif;color:var(--white);background:var(--bg)}
+
+    /* ---------- Global ---------- */
+    a{color:var(--gold);text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+    .section{padding:80px 0}
+    .muted{color:var(--muted)}
+    h1,h2{letter-spacing:.2px}
+
+    /* ---------- Sticky Nav ---------- */
+    .nav{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand img{height:28px}
+    .links{display:flex;gap:16px;align-items:center}
+    .nav a{color:#e5e7eb;padding:8px 10px;display:inline-block}
+    .nav a:hover{color:#fff}
+
+    /* ---------- HERO ---------- */
+    .hero{position:relative;min-height:82vh;display:grid;place-items:center;overflow:hidden}
+    .hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.8) saturate(1.05) contrast(1.02)}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.12),rgba(0,0,0,0.55))}
+    .hero-content{position:relative;z-index:1;text-align:center;padding:80px 20px;max-width:980px}
+    .kicker{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(6px);padding:6px 12px;border-radius:999px;margin-bottom:12px}
+    .title{font-size:clamp(36px,6vw,64px);margin:0;color:var(--gold)}
+    .subtitle{font-size:clamp(16px,2.2vw,18px);color:#e5e7eb;margin:6px 0 18px}
+    .meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+    .chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:8px 12px;border-radius:999px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+    .btn{appearance:none;border:none;border-radius:12px;padding:14px 20px;font-weight:700;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),#f7e9bb);color:#1f2937}
+    .btn-ghost{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff}
+
+    /* ---------- Split Sections ---------- */
+    .split{display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
+    .split .img{border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+    .split .img img{width:100%;height:100%;object-fit:cover;display:block}
+    .split .txt{padding:10px}
+    .h2{font-size:clamp(26px,3vw,34px);margin:0 0 10px;color:var(--gold)}
+    .lead{font-size:18px;color:#e5e7eb;margin:0 0 8px}
+    .sep{height:1px;background:rgba(255,255,255,.12);margin:16px 0}
+    @media(min-width:960px){.split{grid-template-columns:1.05fr .95fr}}
+
+    /* ---------- Agenda (cards) ---------- */
+    .agenda{display:grid;gap:14px;grid-template-columns:1fr;align-items:stretch}
+    @media(min-width:800px){.agenda{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1100px){.agenda{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:800px){.agenda{grid-template-columns:repeat(3,1fr)}}
+    .card{background:var(--glass);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px;min-height:120px}
+    .time{font-weight:700}
+
+    /* ---------- Gallery ---------- */
+    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .gallery img{width:100%;height:260px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.08)}
+    @media(min-width:1000px){.gallery{grid-template-columns:repeat(4,1fr)} .gallery img{height:220px}}
+
+    /* ---------- RSVP modal ---------- */
+    dialog{border:none;border-radius:16px;padding:0;background:rgba(15,23,42,.94);color:#fff;width:min(680px,92vw)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .modal-body{padding:18px 22px;display:grid;gap:16px}
+    .field{display:grid;gap:6px}
+    .field input,.field select,.field textarea{background:#0b1222;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px;color:#e5e7eb}
+    .modal-actions{display:flex;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid rgba(255,255,255,.12)}
+
+    /* ---------- Footer ---------- */
+    footer{padding:40px 0;color:#cbd5e1;border-top:1px solid rgba(255,255,255,.12);background:#0b1222}
+    footer .cols{display:grid;gap:16px}
+    @media(min-width:800px){footer .cols{grid-template-columns:2fr 1fr 1fr}}
+    .legal{opacity:.9;font-size:12.5px;line-height:1.6}
+
+    /* ---------- Mobile-first Tweaks ---------- */
+    section{scroll-margin-top:90px}
+    .menu-btn{display:none;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:8px 10px}
+    .mapframe{width:100%;height:auto;aspect-ratio:16/9;border:0;filter:grayscale(20%);display:block}
+    .split{display:grid;grid-template-columns:1fr;gap:16px;align-items:center}
+    .split.rev .txt{order:2}
+    .split.rev .img{order:1}
+    @media(min-width:960px){
+      .split{grid-template-columns:1.05fr .95fr;gap:24px}
+      .split.rev .txt{order:1}
+      .split.rev .img{order:2}
+    }
+    @media(max-width:860px){
+      .hero{min-height:72vh}
+      .hero-content{padding:56px 18px}
+      .cta .btn{width:100%}
+      .nav .links{display:none}
+      .menu-btn{display:inline-flex}
+      .nav.open .links{display:grid;position:absolute;left:0;right:0;top:64px;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+      .gallery{grid-template-columns:1fr}
+      .agenda{grid-template-columns:1fr}
+      .section{padding:56px 0}
+    }
+    @media(min-width:861px) and (max-width:1100px){ .gallery{grid-template-columns:repeat(2,1fr)} }
+  .bgimg{aspect-ratio:16/10;background-image:var(--bg);background-size:cover;background-position:center;min-height:220px;border-radius:20px;border:1px solid rgba(255,255,255,.1)}
+  .timeline{list-style:none;margin:10px 0 0;padding:0;position:relative}
+    .timeline::before{content:"";position:absolute;left:112px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.2)}
+    .timeline li{display:grid;grid-template-columns:112px 1fr;column-gap:18px;align-items:flex-start;margin:14px 0;position:relative}
+    .timeline .time{font-weight:700;color:#f8fafc;white-space:nowrap}
+    .timeline .box{background:var(--glass);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}
+    .timeline .dot{position:absolute;left:106px;top:10px;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(212,175,55,.15)}
+    @media(max-width:720px){
+      .timeline::before{left:10px}
+      .timeline li{grid-template-columns:1fr;row-gap:8px;padding-left:24px}
+      .timeline .dot{left:4px}
+      .timeline .time{white-space:normal}
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand"><img src="MMV_Logo-bai.png" alt="MMV"/><strong>MassMutual Ventures Deutschland</strong></div>
+      <button class="menu-btn" id="menuBtn" aria-label="Menü öffnen">Menü</button>
+      <div class="links" id="navLinks">
+        <a href="#about">Event</a>
+        <a href="#dinner">Dinner</a>
+        <a href="#presentation">Präsentation</a>
+        <a href="#galerie">Galerie</a>
+        <a href="#rsvp">RSVP</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <video id="bgVideo" autoplay muted loop playsinline poster="assets/poster.jpg">
+      <source src="https://uppereastsite.de/wp-content/uploads/2024/11/UES_Website_Headervideo-klein.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-content">
+      <span class="kicker">Nur auf Einladung · Privater Rahmen</span>
+      <h1 class="title">Exklusiver Investoren‑Empfang</h1>
+      <p class="subtitle">„Streng vertraulich – Einladung ist nicht übertragbar“</p>
+      <div class="meta">
+        <span class="chip">📅 8. November 2025 · Beginn 17:30 Uhr</span>
+        <span class="chip">📍 Upper East Site, Frankfurt am Main</span>
+        <span class="chip" id="countdown">⏳ Countdown wird berechnet…</span>
+      </div>
+      <div class="cta">
+        <a class="btn btn-ghost" href="#about">Mehr erfahren</a>
+        <button class="btn btn-primary" id="openRSVP">RSVP senden</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- EVENT INTRO -->
+  <section id="about" class="section">
+    <div class="wrap split">
+      <div class="img"><iframe class="mapframe" title="Upper East Site – Karte" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Upper+East+Site+Frankfurt&output=embed"></iframe></div>
+      <div class="txt">
+        <h2 class="h2">Die Location · Upper East Site</h2>
+        <p class="lead">Ein eleganter Rahmen im Herzen Frankfurts – ideal für vertrauliche Investorengespräche und exklusive Präsentationen.</p>
+        <div class="sep"></div>
+        <p class="muted">Adresse wird nach Bestätigung mitgeteilt. Teilnahme ausschließlich für bestehende professionelle bzw. semiprofessionelle Investoren und Family Offices.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DINNER -->
+  <section id="dinner" class="section" style="background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.0))">
+    <div class="wrap split rev">
+      <div class="img"><img src="assets/ues-2.jpg" alt="Dinner"/></div>
+      <div class="txt">
+        <h2 class="h2">Empfang & Dinner · 17:30 – 18:30</h2>
+        <p class="lead">Ankommen, Aperitif, kurzes Warm‑up. Gelegenheit zum Austausch mit dem MMV‑Team und geladenen Gästen.</p>
+        <ul class="muted">
+          <li>Signature‑Drinks & Fingerfood</li>
+          <li>Seating nach Anmeldung</li>
+          <li>Diskrete Fotopolitik</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESENTATION -->
+  <section id="presentation" class="section">
+    <div class="wrap split">
+      <div class="txt">
+        <h2 class="h2">Private Präsentation · 18:30 – 20:00</h2>
+        <p class="lead">Aquila 2.0 Quant‑Update, selektive Primärmarkt‑Zuteilungen, Compliance‑ und Steuerrahmen (MiFID II, WpPG, KYC/AML).</p>
+        <div class="sep"></div>
+        <ul class="timeline">
+          <li>
+            <div class="dot"></div>
+            <div class="time">18:30 – 18:45</div>
+            <div class="box"><b>Begrüßung & Rahmen</b></div>
+          </li>
+          <li>
+            <div class="dot"></div>
+            <div class="time">18:45 – 19:15</div>
+            <div class="box"><b>Cases:</b> Zuteilungs‑/Platzierungsopportunitäten</div>
+          </li>
+          <li>
+            <div class="dot"></div>
+            <div class="time">19:15 – 19:40</div>
+            <div class="box"><b>Aquila 2.0:</b> Multi‑Agent, VaR/CVaR, Risiko</div>
+          </li>
+          <li>
+            <div class="dot"></div>
+            <div class="time">19:40 – 20:00</div>
+            <div class="box"><b>Q&A & nächste Schritte</b></div>
+          </li>
+        </ul>
+      </div>
+      <div class="img bgimg" style="--bg:url('assets/ues-3.jpg')"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="galerie" class="section" style="padding-top:40px">
+    <div class="wrap">
+      <h2 class="h2" style="margin-bottom:16px">Galerie</h2>
+      <div class="gallery">
+        <img src="assets/ues-g1.jpg" alt="Galerie 1"/>
+        <img src="assets/ues-g2.jpg" alt="Galerie 2"/>
+        <img src="assets/ues-g3.jpg" alt="Galerie 3"/>
+        <img src="assets/ues-g4.jpg" alt="Galerie 4"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP SECTION -->
+  <section id="rsvp" class="section" style="background:#0b1222">
+    <div class="wrap">
+      <div class="split">
+        <div class="txt">
+          <h2 class="h2">RSVP</h2>
+          <p class="lead">Die Plätze sind limitiert (max. 100). Nach erfolgreicher Bestätigung erhalten Sie Ihren digitalen Einlass‑QR‑Code.</p>
+          <p class="muted">Dresscode: Business/Cocktail · Sprache: Deutsch/Chinesisch · Kosten: keine (nur geladene Gäste)</p>
+          <div class="cta"><button class="btn btn-primary" id="openRSVP2">Jetzt zusagen</button></div>
+        </div>
+        <div class="img"><img src="assets/ues-4.jpg" alt="RSVP"/></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / LEGAL -->
+  <footer>
+    <div class="wrap">
+      <div class="cols">
+        <div>
+          <strong>MassMutual Ventures Deutschland</strong>
+          <p class="muted">E‑Mail: <a href="mailto:info@massmutualventures.org">info@massmutualventures.org</a></p>
+          <p class="legal">Diese Einladung richtet sich ausschließlich an bestehende professionelle/semi‑professionelle Investoren. Kein öffentliches Angebot i.S.d. WpPG oder WpHG. Teilnahme nur nach erfolgreichem KYC/AML‑Check. Einladung ist nicht übertragbar.</p>
+        </div>
+        <div>
+          <b>Impressum</b>
+          <p class="muted">MassMutual Ventures LLC · Reg.-Nr. 6972572 (Delaware, USA) · Deutsche Niederlassung: Frankfurt am Main</p>
+        </div>
+        <div>
+          <b>Datenschutz</b>
+          <p class="muted">Mit Ihrer RSVP‑Zusage willigen Sie in die Verarbeitung der übermittelten Daten zum Zwecke der Veranstaltungsorganisation ein (GDPR).</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- RSVP MODAL (mailto) -->
+  <dialog id="rsvpModal" aria-labelledby="rsvpTitle">
+    <div class="modal-head">
+      <h3 id="rsvpTitle" style="margin:0;font-size:18px;font-weight:800">RSVP ausfüllen</h3>
+      <button class="btn btn-ghost" onclick="closeRSVP()">Schließen</button>
+    </div>
+    <form class="modal-body" id="rsvpForm" method="dialog">
+      <div class="grid" style="grid-template-columns:1fr;gap:14px">
+        <div class="field"><label>Name</label><input required name="name" placeholder="z. B. Anna Müller" /></div>
+        <div class="field"><label>E‑Mail</label><input required type="email" name="email" placeholder="you@example.com" /></div>
+        <div class="field"><label>Unternehmen (optional)</label><input name="company" /></div>
+        <div class="field"><label>Personen</label><select name="persons"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+        <div class="field"><label>Nachricht</label><textarea name="msg" rows="3" placeholder="z. B. Interesse an Allokation & Quant"></textarea></div>
+        <label style="display:flex;gap:10px;align-items:flex-start"><input type="checkbox" required /> Ich stimme der Verarbeitung der angegebenen Daten für die Veranstaltungsorganisation zu (GDPR).</label>
+      </div>
+    </form>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeRSVP()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="sendMailto()">RSVP senden</button>
+    </div>
+  </dialog>
+
+  <script>
+    // Event time (Europe/Berlin)
+    const EVENT_ISO = '2025-11-08T17:30:00+01:00';
+    function updateCountdown(){
+      const end = new Date(EVENT_ISO).getTime();
+      const now = Date.now();
+      let diff = end - now; const el = document.getElementById('countdown');
+      if(diff <= 0){ el.textContent = '⏳ Veranstaltung läuft oder ist beendet'; return; }
+      const d = Math.floor(diff/86400000); diff -= d*86400000;
+      const h = Math.floor(diff/3600000); diff -= h*3600000;
+      const m = Math.floor(diff/60000);
+      el.textContent = `⏳ Countdown: ${d} Tage ${h} Std ${m} Min`;
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+      updateCountdown();
+      setInterval(updateCountdown, 60000);
+    });
+
+    // RSVP modal
+    const dlg = document.getElementById('rsvpModal');
+    document.getElementById('openRSVP').addEventListener('click',()=>dlg.showModal());
+    document.getElementById('openRSVP2').addEventListener('click',()=>dlg.showModal());
+    function closeRSVP(){ dlg.close(); }
+    window.closeRSVP = closeRSVP;
+
+    // mailto
+    function sendMailto(){
+      const form = document.getElementById('rsvpForm');
+      const data = new FormData(form);
+      const name = (data.get('name')||'').toString().trim();
+      const email = (data.get('email')||'').toString().trim();
+      if(!name || !email){ alert('Bitte Name & E‑Mail ausfüllen'); return; }
+      const company = (data.get('company')||'').toString().trim();
+      const persons = (data.get('persons')||'1').toString();
+      const msg = (data.get('msg')||'').toString().trim();
+
+      const subject = encodeURIComponent(`RSVP · Investoren‑Empfang · ${name}`);
+      const body = encodeURIComponent(
+        `Name: ${name}\n`+
+        `E‑Mail: ${email}\n`+
+        `Unternehmen: ${company}\n`+
+        `Personen: ${persons}\n`+
+        `Nachricht: ${msg}\n\n`+
+        `Event: Exklusiver Investoren‑Empfang\n`+
+        `Zeit: 08.11.2025 17:30 (Europe/Berlin)\n`+
+        `Ort: Upper East Site, Frankfurt am Main\n`
+      );
+      window.location.href = `mailto:info@massmutualventures.org?subject=${subject}&body=${body}`;
+      dlg.close();
+    }
+    window.sendMailto = sendMailto;
+
+    // Accessibility & Mobile menu
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const bgVideo = document.getElementById('bgVideo');
+    if(mediaQuery.matches){ bgVideo.removeAttribute('autoplay'); bgVideo.pause(); }
+    bgVideo.setAttribute('webkit-playsinline','');
+
+    const menuBtn = document.getElementById('menuBtn');
+    const nav = document.querySelector('.nav');
+    if(menuBtn){ menuBtn.addEventListener('click',()=>{ nav.classList.toggle('open'); }); }
+  </script>
+</body>
+</html>
