@@ -1,7 +1,7 @@
 {
   "FRS.DE": {
-    "price": 3.42,
-    "time": 1768232160000
+    "price": 0.0,
+    "time": 0
   },
   "PGN.DE": {
     "price": 1.83,
@@ -12,8 +12,8 @@
     "time": 1768235340000
   },
   "TPG.DE": {
-    "price": 5.2,
-    "time": 1767916800000
+    "price": 0.0,
+    "time": 0
   },
   "VRL.DE": {
     "price": 18.1,
