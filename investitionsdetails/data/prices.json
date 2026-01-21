@@ -1,22 +1,22 @@
 {
   "FRS.DE": {
-    "price": 0.0,
-    "time": 0
+    "price": 3.18,
+    "time": 1768997160000
   },
   "PGN.DE": {
-    "price": 0.0,
-    "time": 0
+    "price": 1.965,
+    "time": 1768867200000
   },
   "S92.DE": {
-    "price": 0.0,
-    "time": 0
+    "price": 34.0,
+    "time": 1769008380000
   },
   "TPG.DE": {
-    "price": 0.0,
-    "time": 0
+    "price": 4.82,
+    "time": 1768867200000
   },
   "VRL.DE": {
-    "price": 0.0,
-    "time": 0
+    "price": 17.299999,
+    "time": 1769004480000
   }
 }
